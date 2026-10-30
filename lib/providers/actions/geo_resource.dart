@@ -52,10 +52,7 @@ class GeoResourceAction extends _$GeoResourceAction {
     _manualUpdates[geoResource] = announceSuccess;
     final operation = _startUpdating(geoResource);
     try {
-      final message = await _core.updateGeoData(geoResource.name);
-      if (message.isNotEmpty) {
-        throw MessageException(message);
-      }
+      await _core.updateGeoData(geoResource.name);
     } catch (_) {
       if (previous != null) {
         _manualUpdates[geoResource] = previous;

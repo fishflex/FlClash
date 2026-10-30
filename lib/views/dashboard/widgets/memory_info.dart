@@ -313,7 +313,7 @@ class _MemoryDetailSheetState extends ConsumerState<MemoryDetailSheet>
   /// Resolves to the bytes freed.
   Future<int> _release() async {
     final before = _snapshot.total;
-    await ref.read(coreHandlerProvider).requestGc();
+    await ref.read(coreHandlerProvider).forceGc();
     if (!mounted) {
       return 0;
     }

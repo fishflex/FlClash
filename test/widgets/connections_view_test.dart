@@ -104,7 +104,7 @@ void main() {
     tester,
   ) async {
     final core = _MockCoreHandlerInterface();
-    when(() => core.closeConnection(any())).thenAnswer((_) async => true);
+    when(() => core.closeConnection(any())).thenAnswer((_) async {});
     container.dispose();
     container = ProviderContainer(
       overrides: [

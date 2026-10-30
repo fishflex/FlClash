@@ -151,6 +151,13 @@ class App {
     });
   }
 
+  Future<void> extractAsset(String asset, String path) async {
+    await methodChannel.invokeMethod<bool>('extractAsset', {
+      'asset': asset,
+      'path': path,
+    });
+  }
+
   Future<bool?> openAppSettings() async {
     if (!Platform.isAndroid) return false;
     return methodChannel.invokeMethod<bool>('openAppSettings');

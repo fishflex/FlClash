@@ -451,14 +451,14 @@ List<String> _filtersOf(ProxyGroup group) => [
 
 List<CustomIssue> _filterIssues(
   AppLocalizations appLocalizations,
-  List<String> errors,
+  Map<int, String> issues,
 ) => [
   for (final (index, title) in [
     appLocalizations.filter,
     appLocalizations.excludeFilter,
   ].indexed)
-    if (errors[index].isNotEmpty)
-      CustomIssue.invalidFilter(title, errors[index]),
+    if (issues[index] case final issue?)
+      CustomIssue.invalidFilter(title, issue),
 ];
 
 Future<bool> _handleSaveProxyGroup(BuildContext context, WidgetRef ref) async {
@@ -528,7 +528,7 @@ class _EditProxyGroupViewState extends ConsumerState<EditProxyGroupView> {
   bool _saving = false;
   Timer? _filterTimer;
   int _filterRequest = 0;
-  List<String> _filterErrors = const ['', ''];
+  Map<int, String> _filterErrors = const {};
 
   @override
   void initState() {
@@ -554,9 +554,9 @@ class _EditProxyGroupViewState extends ConsumerState<EditProxyGroupView> {
     final request = ++_filterRequest;
     final filters = _filtersOf(ref.read(proxyGroupProvider));
     if (filters.every((filter) => filter.isEmpty)) {
-      if (_filterErrors.any((error) => error.isNotEmpty)) {
+      if (_filterErrors.isNotEmpty) {
         setState(() {
-          _filterErrors = const ['', ''];
+          _filterErrors = const {};
         });
       }
       return;
@@ -567,7 +567,7 @@ class _EditProxyGroupViewState extends ConsumerState<EditProxyGroupView> {
         return;
       }
       setState(() {
-        _filterErrors = errors ?? const ['', ''];
+        _filterErrors = errors ?? const {};
       });
     });
   }

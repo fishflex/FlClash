@@ -411,7 +411,10 @@ void main() {
         final params =
             invocation.positionalArguments.single as OutboundIpParams;
         final failing = params.proxyName != directOutbound && epoch == 1;
-        return failing ? null : _address(coreEpoch: epoch);
+        if (failing) {
+          throw TimeoutException('no answer');
+        }
+        return _address(coreEpoch: epoch);
       });
       await tester.pumpWidget(_probingApp(core));
       await tester.pump();
@@ -445,7 +448,10 @@ void main() {
         final params =
             invocation.positionalArguments.single as OutboundIpParams;
         asked.add(params.proxyName);
-        return params.proxyName == directOutbound ? _address() : null;
+        if (params.proxyName != directOutbound) {
+          throw TimeoutException('no answer');
+        }
+        return _address();
       });
       await tester.pumpWidget(_probingApp(core));
       await tester.pump();

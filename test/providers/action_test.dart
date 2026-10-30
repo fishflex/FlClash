@@ -208,7 +208,7 @@ void main() {
 
     test('forwards a manual resource update to Core', () async {
       final core = _MockCoreHandlerInterface();
-      when(() => core.updateGeoData('MMDB')).thenAnswer((_) async => '');
+      when(() => core.updateGeoData('MMDB')).thenAnswer((_) async {});
       final container = ProviderContainer(
         overrides: [
           coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),

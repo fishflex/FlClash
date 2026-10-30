@@ -49,9 +49,8 @@ class _FiltersViewState extends ConsumerState<FiltersView> {
   }
 
   Future<String?> _checkRegex(String regex) async {
-    final errors = await checkFilters(ref, [regex]);
-    final error = errors?.single ?? '';
-    return error.isEmpty ? null : error;
+    final issues = await checkFilters(ref, [regex]);
+    return issues?[0];
   }
 
   void _handleDelete(Set<String> labels) {

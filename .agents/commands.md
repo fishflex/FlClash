@@ -208,7 +208,8 @@ What those suites own:
 
 ## Native Component Verification
 
-The CI Go-wrapper checks can be reproduced without CGO, the Android files included:
+The CI Go-wrapper checks can be reproduced without CGO. They cover the Android files too, except the cgo one in
+`timezone/`, which only the gomobile build compiles:
 
 ```bash
 cd core

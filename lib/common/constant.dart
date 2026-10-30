@@ -22,6 +22,7 @@ const helperPortKey =
     'SYSTEM\\CurrentControlSet\\Services\\$appHelperService\\Runtime';
 const helperPortValue = 'Port';
 const helperSocketPath = '/run/flclash/helper.sock';
+const helperUnitPath = '/etc/systemd/system/flclash-helper.service';
 const helperProtocolVersionHeader = 'x-flclash-helper-protocol';
 final helperProtocolVersion = Platform.isWindows ? '8' : '6';
 const maxTextScale = 1.4;
@@ -84,8 +85,6 @@ const outboundIpTimeoutDuration = Duration(seconds: 6);
 /// unresponsive. [budgetFactor] covers methods that spend it more than once.
 Duration coreGuardFor(int timeout, {int budgetFactor = 2}) =>
     Duration(milliseconds: timeout * budgetFactor) + const Duration(seconds: 5);
-
-Duration probeGuardDuration(ProbeParams params) => coreGuardFor(params.timeout);
 
 /// Kept in step with serviceSweepBudgetFactor in core/service_check.go.
 const serviceSweepBudgetFactor = 6;

@@ -780,7 +780,16 @@ class SetupAction extends _$SetupAction {
           }
           final profileId = profile?.id;
           if (profileId != null) {
-            await appPath.ensureProviderDirs(profileId);
+            // A Core that ran elevated may have left these root-owned; it
+            // reclaims them once it runs elevated again, so the config goes on.
+            try {
+              await appPath.ensureProviderDirs(profileId);
+            } on FileSystemException catch (error) {
+              commonPrint.log(
+                'provider directories unavailable: ${compactError(error)}',
+                logLevel: LogLevel.warning,
+              );
+            }
           }
           final message = await _core.setupConfig(
             params: setupParams,

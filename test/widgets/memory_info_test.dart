@@ -686,7 +686,7 @@ void main() {
 
     testWidgets('the release action asks the Core to collect', (tester) async {
       final coreInterface = _MockCoreHandlerInterface();
-      when(() => coreInterface.forceGc()).thenAnswer((_) async => true);
+      when(() => coreInterface.forceGc()).thenAnswer((_) async {});
       await openSheet(
         tester,
         reader: () async => const MemorySnapshot(app: 1024),

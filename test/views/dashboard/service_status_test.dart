@@ -76,7 +76,7 @@ void main() {
   }
 
   Widget app({
-    FutureOr<OutboundIpResult?> Function(OutboundIpParams params)? outboundIp,
+    FutureOr<OutboundIpResult> Function(OutboundIpParams params)? outboundIp,
     bool started = true,
     AppSettingProps settings = const AppSettingProps(),
     double width = 360,
@@ -86,7 +86,7 @@ void main() {
     IpQuality? ipQuality,
   }) {
     when(() => core.outboundIp(any())).thenAnswer((invocation) async {
-      if (outboundIp == null) return Completer<OutboundIpResult?>().future;
+      if (outboundIp == null) return Completer<OutboundIpResult>().future;
       return outboundIp(
         invocation.positionalArguments.single as OutboundIpParams,
       );
@@ -373,7 +373,7 @@ void main() {
 
   Future<Finder> openCheckedSheet(
     WidgetTester tester, {
-    required FutureOr<OutboundIpResult?> Function(OutboundIpParams params)
+    required FutureOr<OutboundIpResult> Function(OutboundIpParams params)
     outboundIp,
   }) async {
     answer(
@@ -554,7 +554,10 @@ void main() {
   testWidgets('a sheet row falls back to the node without an address', (
     tester,
   ) async {
-    final sheet = await openCheckedSheet(tester, outboundIp: (_) => null);
+    final sheet = await openCheckedSheet(
+      tester,
+      outboundIp: (_) => throw TimeoutException('no answer'),
+    );
 
     expect(
       find.descendant(of: sheet, matching: find.text('HK-01')),
