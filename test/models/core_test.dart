@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:test/test.dart';
@@ -9,24 +10,26 @@ void main() {
     test('fromJson uses snake-case keys', () {
       final json = {
         'selected-map': {'G1': 'P1'},
-        'test-url': 'http://test.com',
-        'skip-cert-verify': true,
+        'options': {'test-url': 'http://test.com', 'skip-cert-verify': true},
       };
       final params = SetupParams.fromJson(json);
       expect(params.selectedMap, {'G1': 'P1'});
-      expect(params.testUrl, 'http://test.com');
-      expect(params.skipCertVerify, isTrue);
+      expect(params.options.testUrl, 'http://test.com');
+      expect(params.options.skipCertVerify, isTrue);
     });
 
     test('toJson uses snake-case keys', () {
       const params = SetupParams(
         selectedMap: {'G1': 'P1'},
-        testUrl: 'http://t.com',
+        options: CoreOptions(testUrl: 'http://t.com'),
       );
-      final json = params.toJson();
+      final json = jsonDecode(jsonEncode(params)) as Map<String, Object?>;
       expect(json['selected-map'], {'G1': 'P1'});
-      expect(json['test-url'], 'http://t.com');
-      expect(json['skip-cert-verify'], isFalse);
+      expect(json['options'], {
+        'test-url': 'http://t.com',
+        'skip-cert-verify': false,
+        'delay-test-timeout': defaultDelayTestTimeout,
+      });
     });
   });
 
@@ -43,6 +46,7 @@ void main() {
         'tcp-concurrent': false,
         'external-controller': '',
         'unified-delay': false,
+        'options': {'test-url': 'http://t.com'},
       };
       final params = UpdateParams.fromJson(json);
       expect(params.mixedPort, 7890);

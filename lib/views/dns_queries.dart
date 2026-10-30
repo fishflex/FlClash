@@ -101,7 +101,8 @@ class _DnsQueriesViewState extends ConsumerState<DnsQueriesView>
     final appLocalizations = context.appLocalizations;
     var cleared = false;
     try {
-      cleared = await ref.read(coreHandlerProvider).clearDnsCache();
+      await ref.read(coreHandlerProvider).clearDnsCache();
+      cleared = true;
     } catch (error) {
       commonPrint.log(
         'clearDnsCache error: $error',

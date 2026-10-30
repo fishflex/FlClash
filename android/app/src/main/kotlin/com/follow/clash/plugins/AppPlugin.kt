@@ -47,6 +47,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.IOException
 
 class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
 
@@ -61,6 +63,8 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         PluginRegistry.RequestPermissionsResultListener(::onRequestPermissionsResultListener)
 
     private lateinit var channel: MethodChannel
+
+    private lateinit var flutterAssets: FlutterPlugin.FlutterAssets
 
     private lateinit var scope: CoroutineScope
 
@@ -207,9 +211,28 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 GlobalState.lastExitInfo()
             }
 
+            "extractAsset" -> reply(result) {
+                extractAsset(
+                    requireNotNull(call.argument<String>("asset")),
+                    requireNotNull(call.argument<String>("path")),
+                )
+                true
+            }
+
             else -> {
                 result.notImplemented()
             }
+        }
+    }
+
+    private fun extractAsset(asset: String, path: String) {
+        val partial = File("$path.part")
+        val key = flutterAssets.getAssetFilePathByName(asset)
+        GlobalState.application.assets.open(key).use { input ->
+            partial.outputStream().use { output -> input.copyTo(output, 1 shl 16) }
+        }
+        if (!partial.renameTo(File(path))) {
+            throw IOException("Unable to move $asset to $path")
         }
     }
 
@@ -415,6 +438,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "${Components.PACKAGE_NAME}/app")
         channel.setMethodCallHandler(this)
+        flutterAssets = flutterPluginBinding.flutterAssets
         watchPackageChanges(flutterPluginBinding.applicationContext)
     }
 

@@ -152,8 +152,8 @@ Future<Map<int, String>> customProxyCoreErrors(Ref ref) async {
     final results = await ref
         .read(coreHandlerProvider)
         .validateProxies(unchecked);
-    for (final (index, message) in results.indexed) {
-      verdicts[unchecked[index]] = message;
+    for (final (index, definition) in unchecked.indexed) {
+      verdicts[definition] = results[index] ?? '';
     }
   }
   return {

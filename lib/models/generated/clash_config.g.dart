@@ -937,6 +937,9 @@ _PatchClashConfig _$PatchClashConfigFromJson(Map<String, dynamic> json) =>
       generalOverrideKeys: json['general-override-keys'] == null
           ? const {}
           : _generalOverrideKeysFromJson(json['general-override-keys'] as List),
+      mitm: json['mitm'] == null
+          ? defaultMitm
+          : Mitm.fromJson(json['mitm'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PatchClashConfigToJson(_PatchClashConfig instance) =>
@@ -982,6 +985,7 @@ Map<String, dynamic> _$PatchClashConfigToJson(_PatchClashConfig instance) =>
       'general-override-keys': instance.generalOverrideKeys
           .map((e) => _$GeneralOverrideKeyEnumMap[e]!)
           .toList(),
+      'mitm': instance.mitm,
     };
 
 const _$ModeEnumMap = {
@@ -1025,4 +1029,42 @@ const _$GeneralOverrideKeyEnumMap = {
   GeneralOverrideKey.tcpConcurrent: 'tcp-concurrent',
   GeneralOverrideKey.ipv6: 'ipv6',
   GeneralOverrideKey.geodataLoader: 'geodata-loader',
+};
+
+_Mitm _$MitmFromJson(Map<String, dynamic> json) => _Mitm(
+  enable: json['enable'] as bool? ?? false,
+  hostname:
+      (json['hostname'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  skipServerCertVerify: json['skip-server-cert-verify'] as bool? ?? false,
+  autoQuicBlock: json['auto-quic-block'] as bool? ?? true,
+  urlRewrite:
+      (json['url-rewrite'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  headerRewrite:
+      (json['header-rewrite'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  bodyRewrite:
+      (json['body-rewrite'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  mapLocal:
+      (json['map-local'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$MitmToJson(_Mitm instance) => <String, dynamic>{
+  'enable': instance.enable,
+  'hostname': instance.hostname,
+  'skip-server-cert-verify': instance.skipServerCertVerify,
+  'auto-quic-block': instance.autoQuicBlock,
+  'url-rewrite': instance.urlRewrite,
+  'header-rewrite': instance.headerRewrite,
+  'body-rewrite': instance.bodyRewrite,
+  'map-local': instance.mapLocal,
 };

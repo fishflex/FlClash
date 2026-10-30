@@ -42,7 +42,7 @@ void main() {
 
   setUp(() {
     core = _MockCoreHandlerInterface();
-    when(() => core.validateConfig(any())).thenAnswer((_) async => '');
+    when(() => core.validateConfig(any())).thenAnswer((_) async => null);
     container = ProviderContainer(
       overrides: [
         profilesProvider.overrideWith(TestProfiles.new),

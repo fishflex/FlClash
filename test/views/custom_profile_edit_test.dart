@@ -170,11 +170,11 @@ void main() {
     ).copyWith(id: 2);
     core = _MockCore();
     when(() => core.validateFilters(any())).thenAnswer(
-      (invocation) async => [
-        for (final filter
-            in invocation.positionalArguments.single as List<String>)
-          filter.contains('(') ? 'missing closing )' : '',
-      ],
+      (invocation) async => {
+        for (final (index, filter)
+            in (invocation.positionalArguments.single as List<String>).indexed)
+          if (filter.contains('(')) index: 'missing closing )',
+      },
     );
     final built = ProviderContainer(
       overrides: [

@@ -770,6 +770,36 @@ void main() {
       expect(config['routing-mark'], 6666);
       expect(config['disable-keep-alive'], true);
     });
+
+    test('the mitm section is the app setting, never the profile', () async {
+      final config = await runWith(
+        const PatchClashConfig(mitm: Mitm(enable: true, hostname: ['a.com'])),
+        {
+          'mitm': {
+            'enable': true,
+            'hostname': ['*'],
+            'url-rewrite': ['^http://x _ reject'],
+          },
+        },
+      );
+      final mitm = config['mitm'] as YamlMap;
+
+      expect(mitm['enable'], isTrue);
+      expect(mitm['hostname'], ['a.com']);
+      expect(mitm['url-rewrite'], isEmpty);
+    });
+
+    test('a profile cannot turn MITM on while the app has it off', () async {
+      final config = await runWith(const PatchClashConfig(), {
+        'mitm': {
+          'enable': true,
+          'hostname': ['*'],
+        },
+      });
+
+      expect((config['mitm'] as YamlMap)['enable'], isFalse);
+      expect((config['mitm'] as YamlMap)['hostname'], isEmpty);
+    });
   });
 
   group('makeRealProfileTask legacy provider file migration', () {

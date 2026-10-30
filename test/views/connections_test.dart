@@ -226,7 +226,7 @@ void main() {
       _tracker(id: 'b', host: 'beta.test'),
     ];
     when(core.getConnections).thenAnswer((_) async => connections);
-    when(() => core.closeConnection(any())).thenAnswer((_) async => true);
+    when(() => core.closeConnection(any())).thenAnswer((_) async {});
 
     await pumpConnections(tester);
     await pumpSettled(tester);

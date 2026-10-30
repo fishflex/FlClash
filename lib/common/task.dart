@@ -245,6 +245,7 @@ Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
       }
     }
   }
+  rawConfig['mitm'] = realPatchConfig.mitm.toJson();
   if (rawConfig['profile'] == null) {
     rawConfig['profile'] = {};
   }

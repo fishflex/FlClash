@@ -500,9 +500,7 @@ void main() {
     when(
       () => core.updateExternalProvider('proxy-a'),
     ).thenAnswer((_) => completer.future);
-    when(
-      () => core.updateExternalProvider('rule-a'),
-    ).thenAnswer((_) async => '');
+    when(() => core.updateExternalProvider('rule-a')).thenAnswer((_) async {});
     when(() => core.getExternalProvider(any())).thenAnswer(
       (invocation) async =>
           _provider(invocation.positionalArguments.first as String),
@@ -613,7 +611,7 @@ void main() {
         providerName: 'editable',
         data: any(named: 'data'),
       ),
-    ).thenAnswer((_) async => '');
+    ).thenAnswer((_) async {});
     when(
       () => core.getExternalProvider('editable'),
     ).thenAnswer((_) async => provider);
@@ -686,7 +684,12 @@ void main() {
         providerName: 'rejected',
         data: any(named: 'data'),
       ),
-    ).thenAnswer((_) async => 'invalid payload');
+    ).thenAnswer(
+      (_) async => throw const CoreMethodException(
+        code: 'core_error',
+        message: 'invalid payload',
+      ),
+    );
 
     final container = containerFor(tester, [provider]);
     await pump(tester, container);

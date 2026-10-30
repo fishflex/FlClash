@@ -15,8 +15,7 @@ class CoreAction extends _$CoreAction {
 
     final version = ref.read(versionProvider);
     if (!isInit) {
-      final res = await _core.init(version);
-      commonPrint.log('init result: $res');
+      await _core.init(version);
     } else {
       await ref.read(proxiesActionProvider.notifier).updateGroups();
       await ref.read(providersProvider.notifier).syncProviders();
@@ -86,8 +85,8 @@ class CoreAction extends _$CoreAction {
     }
   }
 
-  Future<void> requestGc() async {
-    await _core.requestGc();
+  Future<void> forceGc() async {
+    await _core.forceGc();
   }
 
   Future<void> crash() async {

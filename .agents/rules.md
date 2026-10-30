@@ -251,7 +251,7 @@ leaving a repo-wide policy as a comment reaches only the reader of that one file
   shared deadline, a node that waited behind a saturated semaphore reached `URLTest` with almost nothing left, so a bulk
   test of a large subscription reported whatever sat at the back of the queue as unreachable.
 - A delay test that the Core does not answer is a fault of the Core or the channel, never a verdict on the proxy:
-  `handleTestDelay` returns within its two timeouts on every path. `asyncTestDelay` therefore returns null instead of a
+  `handleTestDelay` returns within its two timeouts on every path. `testDelay` therefore throws instead of answering a
   `-1` delay, and `ProxiesAction` leaves the last measurement in place and abandons the rest of the run. Writing a
   timeout there is what made a reachable node read as unreachable whenever the host deadline beat the Core's.
 - Delay-test progress lives in `pendingDelayTestsProvider`, not as a sentinel value in `DelayDataSource`. A delay of 0

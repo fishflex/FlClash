@@ -245,11 +245,7 @@ void main() {
 
     setUp(() {
       core = _MockCore();
-      when(() => core.validateProxies(any())).thenAnswer(
-        (invocation) async => [
-          for (final _ in invocation.positionalArguments.first as List) '',
-        ],
-      );
+      when(() => core.validateProxies(any())).thenAnswer((_) async => const {});
     });
 
     void decodesTo(Map<String, List<Map<String, dynamic>>> proxiesByLink) {

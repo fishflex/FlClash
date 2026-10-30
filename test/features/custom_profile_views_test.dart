@@ -970,7 +970,7 @@ void main() {
       tester,
     ) async {
       final form = await openNewGroup(tester);
-      final checked = Completer<List<String>>();
+      final checked = Completer<Map<int, String>>();
       when(() => core.validateFilters(any())).thenAnswer((_) => checked.future);
       form.update(
         (state) => state.copyWith(
@@ -985,8 +985,8 @@ void main() {
       );
       await tester.pump();
       form.update((state) => state.copyWith(name: 'Later'));
-      when(() => core.validateFilters(any())).thenAnswer((_) async => ['', '']);
-      checked.complete(['', '']);
+      when(() => core.validateFilters(any())).thenAnswer((_) async => const {});
+      checked.complete(const {});
       await _expectClosesWithoutIssues(tester);
 
       expect(proxyGroups.value.map((group) => group.name), ['Later']);
@@ -1014,7 +1014,7 @@ void main() {
     ];
     final core = _MockCore();
     registerFallbackValue(<String>[]);
-    when(() => core.validateFilters(any())).thenAnswer((_) async => ['', '']);
+    when(() => core.validateFilters(any())).thenAnswer((_) async => const {});
     final container = ProviderContainer(
       overrides: [
         coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
@@ -1284,7 +1284,7 @@ void main() {
     tester,
   ) async {
     _setViewport(tester);
-    final validated = Completer<List<String>>();
+    final validated = Completer<Map<int, String>>();
     final proxies = _RecordingCustomProxies();
     final core = _MockCore();
     registerFallbackValue(<Map<String, dynamic>>[]);
@@ -1324,7 +1324,7 @@ void main() {
     await tester.tap(find.byTooltip('Save'));
     await tester.pump();
 
-    validated.complete(['']);
+    validated.complete(const {});
     await tester.pumpAndSettle();
 
     expect(proxies.saved.map((proxy) => proxy.name), ['Mine']);
@@ -1340,11 +1340,11 @@ void main() {
     registerFallbackValue(<Map<String, dynamic>>[]);
     when(() => core.validateProxies(any())).thenAnswer((invocation) async {
       await Future<void>.delayed(const Duration(milliseconds: 50));
-      return [
-        for (final definition
-            in invocation.positionalArguments.single as List<Object?>)
-          (definition! as Map)['server'] == null ? 'missing server' : '',
-      ];
+      return {
+        for (final (index, definition)
+            in (invocation.positionalArguments.single as List<Object?>).indexed)
+          if ((definition! as Map)['server'] == null) index: 'missing server',
+      };
     });
     final container = ProviderContainer(
       overrides: [
@@ -1395,7 +1395,7 @@ void main() {
     registerFallbackValue(<Map<String, dynamic>>[]);
     when(
       () => core.validateProxies(any()),
-    ).thenAnswer((_) async => ['missing server']);
+    ).thenAnswer((_) async => const {0: 'missing server'});
     final container = ProviderContainer(
       overrides: [
         coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
@@ -1511,7 +1511,7 @@ void main() {
     ]);
     final core = _MockCore();
     registerFallbackValue(<Map<String, dynamic>>[]);
-    when(() => core.validateProxies(any())).thenAnswer((_) async => ['']);
+    when(() => core.validateProxies(any())).thenAnswer((_) async => const {});
     final container = ProviderContainer(
       overrides: [
         coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
@@ -1614,7 +1614,7 @@ void main() {
     ]);
     final core = _MockCore();
     registerFallbackValue(<Map<String, dynamic>>[]);
-    when(() => core.validateProxies(any())).thenAnswer((_) async => ['']);
+    when(() => core.validateProxies(any())).thenAnswer((_) async => const {});
     final container = ProviderContainer(
       overrides: [
         coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
@@ -1723,7 +1723,7 @@ void main() {
     ]);
     final core = _MockCore();
     registerFallbackValue(<Map<String, dynamic>>[]);
-    when(() => core.validateProxies(any())).thenAnswer((_) async => ['']);
+    when(() => core.validateProxies(any())).thenAnswer((_) async => const {});
     final container = ProviderContainer(
       overrides: [
         coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
@@ -1800,7 +1800,7 @@ void main() {
     final action = _RecordingClashProvidersAction();
     final core = _MockCore();
     registerFallbackValue(<Map<String, dynamic>>[]);
-    when(() => core.validateProxies(any())).thenAnswer((_) async => ['']);
+    when(() => core.validateProxies(any())).thenAnswer((_) async => const {});
     final container = ProviderContainer(
       overrides: [
         coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
@@ -1849,7 +1849,7 @@ void main() {
     final action = _RecordingClashProvidersAction();
     final core = _MockCore();
     registerFallbackValue(<Map<String, dynamic>>[]);
-    when(() => core.validateProxies(any())).thenAnswer((_) async => ['']);
+    when(() => core.validateProxies(any())).thenAnswer((_) async => const {});
     final container = ProviderContainer(
       overrides: [
         coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),

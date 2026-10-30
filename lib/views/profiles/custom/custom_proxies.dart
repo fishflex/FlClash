@@ -616,15 +616,13 @@ Future<Map<int, List<Map<String, dynamic>>>> _decodeShareLinks(
     for (final MapEntry(key: line, value: proxies) in decoded.entries)
       for (final proxy in proxies) (line: line, proxy: proxy),
   ];
-  final errors = await core.validateProxies([
+  final issues = await core.validateProxies([
     for (final entry in entries) entry.proxy,
   ]);
-  for (final (index, error) in errors.indexed) {
-    if (error.isNotEmpty) {
-      throw MessageException(
-        appLocalizations.lineIssueTip(entries[index].line, error),
-      );
-    }
+  if (issues.entries.firstOrNull case MapEntry(:final key, :final value)) {
+    throw MessageException(
+      appLocalizations.lineIssueTip(entries[key].line, value),
+    );
   }
   return decoded;
 }
@@ -765,11 +763,11 @@ Future<bool> _handleSaveCustomProxy(
   );
   if (issues.isEmpty) {
     try {
-      final errors = await ref.read(coreHandlerProvider).validateProxies([
+      final rejected = await ref.read(coreHandlerProvider).validateProxies([
         proxy.definition,
       ]);
-      if (errors.first.isNotEmpty) {
-        issues.add(CustomIssue.coreRejected(errors.first));
+      if (rejected[0] case final issue?) {
+        issues.add(CustomIssue.coreRejected(issue));
       }
     } catch (error) {
       issues.add(CustomIssue.coreRejected(compactError(error)));
@@ -960,10 +958,10 @@ class _EditCustomProxyViewState extends ConsumerState<_EditCustomProxyView> {
     final definition = ref.read(customProxyProvider).definition;
     String? error;
     try {
-      final errors = await ref.read(coreHandlerProvider).validateProxies([
+      final issues = await ref.read(coreHandlerProvider).validateProxies([
         definition,
       ]);
-      error = errors.first.isEmpty ? null : errors.first;
+      error = issues[0];
     } catch (_) {
       error = null;
     }

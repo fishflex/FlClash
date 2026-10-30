@@ -107,6 +107,21 @@ Hotfix releases (3.47.x) carry only cherry-picks listed in the SDK's `CHANGELOG.
   `suspended` state. Check in a GNOME Wayland session without the workaround: minimizing from the caption button
   must log `AppLifecycleState.hidden`.
 
+## Android engine kept for the life of the process
+
+- **Bug:** [flutter/flutter#191168](https://github.com/flutter/flutter/issues/191168). A destroyed Android engine
+  takes its Vulkan device with it, and an isolate that outlives it finalizes the UI's textures against that device on
+  a Dart worker thread. On Mali this aborts in `vkDestroyRenderPass` with a destroyed mutex, and the VPN shares the
+  process. Open as of 3.47.6.
+- **Workaround:** `MainFlutterEngine` holds one engine for the process and `MainActivity` provides it, so finishing the
+  activity keeps the engine. Dart has closed the Core when it pops, so an exit ends the process; only an exit with a
+  VPN run still active destroys the engine, which can still hit the bug. An instance in a second task takes the engine
+  over, and `detachFromFlutterEngine` finishes the one left without a view.
+- **Side effect:** with the activity gone the process keeps about 47 MB more (measured with a minimal profile on an
+  emulator, GPU memory not counted), and reopening returns to the last page instead of starting over.
+- **Remove when:** the engine waits for or detaches spawned isolates before destroying its context. To check, trace
+  `vkDestroyDevice` and `vkDestroyRenderPass` with a Vulkan layer while an `Isolate.run` is alive at `onDestroy`.
+
 ## Liquid glass saves around the transform of a blurring layer
 
 - **Bug:** not filed upstream. On 3.47 Impeller scales a `saveLayer`'s image filter by a transform set inside the

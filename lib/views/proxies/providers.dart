@@ -40,15 +40,7 @@ class _ExternalProvidersSliverState
       await Future.wait(
         widget.providers.map((provider) async {
           try {
-            final message = await proxiesAction.updateProvider(
-              provider,
-              showLoading: true,
-            );
-            if (message.isNotEmpty) {
-              messages.add(
-                UpdatingMessage(label: provider.name, message: message),
-              );
-            }
+            await proxiesAction.updateProvider(provider, showLoading: true);
           } catch (error) {
             messages.add(
               UpdatingMessage(
@@ -157,13 +149,10 @@ class _ProviderItemState extends ConsumerState<ProviderItem> {
   Future<void> _handleUpdateProvider() async {
     if (!_isSyncable) return;
     final proxiesAction = ref.read(proxiesActionProvider.notifier);
-    await globalState.safeRun(() async {
-      final message = await proxiesAction.updateProvider(
-        provider,
-        showLoading: true,
-      );
-      if (message.isNotEmpty) throw MessageException(message);
-    }, silence: false);
+    await globalState.safeRun(
+      () => proxiesAction.updateProvider(provider, showLoading: true),
+      silence: false,
+    );
     proxiesAction.updateGroupsDebounce();
   }
 
@@ -429,10 +418,9 @@ Future<void> _sideLoadProvider(
   final path = provider.path;
   if (path == null) return;
   final data = _decodeProviderFile(bytes);
-  final message = await ref
+  await ref
       .read(proxiesActionProvider.notifier)
       .sideLoadExternalProvider(provider, data, showLoading: true);
-  if (message.isNotEmpty) throw MessageException(message);
   await File(path).safeWriteAsBytes(bytes);
 }
 
