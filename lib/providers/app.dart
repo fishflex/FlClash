@@ -25,6 +25,13 @@ class AuthorizedTunEnable extends _$AuthorizedTunEnable
 }
 
 @Riverpod(keepAlive: true)
+class UpdateDownloadState extends _$UpdateDownloadState
+    with AutoDisposeNotifierMixin {
+  @override
+  UpdateDownload? build() => null;
+}
+
+@Riverpod(keepAlive: true)
 class Logs extends _$Logs with AutoDisposeNotifierMixin {
   @override
   FixedList<Log> build() {

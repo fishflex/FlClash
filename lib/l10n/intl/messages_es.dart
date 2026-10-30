@@ -783,6 +783,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "downloadBandwidth": MessageLookupByLibrary.simpleMessage(
       "Ancho de banda de descarga",
     ),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Descargando actualización",
+    ),
     "duration": MessageLookupByLibrary.simpleMessage("Duración"),
     "edit": MessageLookupByLibrary.simpleMessage("Editar"),
     "editDashboard": MessageLookupByLibrary.simpleMessage("Editar panel"),
@@ -1921,6 +1924,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Con DNS desactivado, se usa el DNS del sistema.",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("Detener"),
+    "stopUpdateDownloadTip": MessageLookupByLibrary.simpleMessage(
+      "¿Detener la descarga de la actualización?",
+    ),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Deteniendo VPN…"),
     "strategy": MessageLookupByLibrary.simpleMessage("Estrategia"),
     "strictRoute": MessageLookupByLibrary.simpleMessage("Ruta estricta"),
@@ -2013,6 +2019,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Sin nombre"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Desfijar ventana"),
     "update": MessageLookupByLibrary.simpleMessage("Actualizar"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "No se pudo descargar la actualización.",
+    ),
+    "updateDownloadStarted": MessageLookupByLibrary.simpleMessage(
+      "Se inició la descarga de la actualización. Consulta el progreso en el panel.",
+    ),
+    "updateDownloadTest": MessageLookupByLibrary.simpleMessage(
+      "Prueba de descarga de actualización",
+    ),
+    "updateFailed": MessageLookupByLibrary.simpleMessage("Error al actualizar"),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "No se pudo instalar la actualización. Puedes descargarla desde la página de la versión.",
+    ),
+    "updateNotVerified": MessageLookupByLibrary.simpleMessage(
+      "No se pudo verificar la actualización descargada.",
+    ),
+    "updateReady": MessageLookupByLibrary.simpleMessage("Actualización lista"),
+    "updateReadyTip": MessageLookupByLibrary.simpleMessage(
+      "La actualización se descargó. Toca para instalarla.",
+    ),
+    "updateRestartTip": MessageLookupByLibrary.simpleMessage(
+      "FlClash se cerrará para instalar la actualización y se volverá a abrir al terminar.",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("Subida"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage(
       "Ancho de banda de subida",

@@ -96,6 +96,8 @@ String userFacingErrorMessage(Object error, AppLocalizations appLocalizations) {
       switch (error) {
         AgeSecretKeyRequiredException() =>
           appLocalizations.ageSecretKeyRequiredTip,
+        ReleaseNotVerifiedException() => appLocalizations.updateNotVerified,
+        SystemDownloadException() => appLocalizations.updateDownloadFailed,
         CoreMethodException(code: 'rule_set_empty') =>
           appLocalizations.ruleSetEmptyTip,
         CoreMethodException(code: 'rule_set_mixed') =>

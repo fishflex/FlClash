@@ -59,6 +59,16 @@ class DeveloperView extends ConsumerWidget {
               unawaited(coreAction.crash());
             },
           ),
+        if (selfUpdateSuffix != null)
+          ListItem(
+            title: Text(appLocalizations.updateDownloadTest),
+            onTap: () {
+              if (ref.read(loadingProvider(LoadingTag.checkUpdate))) return;
+              unawaited(
+                ref.read(commonActionProvider.notifier).testUpdateDownload(),
+              );
+            },
+          ),
         ListItem(
           title: Text(appLocalizations.clearData),
           onTap: () async {

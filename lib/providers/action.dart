@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart' show CancelToken, DioException;
 import 'package:fl_clash/common/app_data.dart';
 import 'package:fl_clash/common/boot_guard.dart';
 import 'package:fl_clash/common/common.dart';
@@ -16,6 +17,7 @@ import 'package:fl_clash/providers/actions/system_exit.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/ui.dart';
+import 'package:fl_clash/widgets/update_download_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/services.dart';
