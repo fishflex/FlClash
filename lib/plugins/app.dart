@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart' show CancelToken, ProgressCallback;
 import 'package:fl_clash/common/boot_record.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -9,6 +10,16 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 const _platformProbeTimeout = Duration(seconds: 2);
+
+// The status codes of Android's PackageInstaller and DownloadManager.
+const _packageInstallSucceeded = 0;
+const _packageInstallAborted = 3;
+const _downloadSuccessful = 8;
+const _downloadFailed = 16;
+const _downloadPollInterval = Duration(milliseconds: 500);
+
+bool packageInstallFailed(int status) =>
+    status != _packageInstallSucceeded && status != _packageInstallAborted;
 
 class App {
   static App? _instance;
@@ -156,6 +167,62 @@ class App {
       'asset': asset,
       'path': path,
     });
+  }
+
+  Future<void> downloadFile(
+    Uri uri,
+    String path, {
+    required String title,
+    required ProgressCallback onReceiveProgress,
+    required CancelToken cancelToken,
+  }) async {
+    final int id;
+    try {
+      id = (await methodChannel.invokeMethod<int>('enqueueDownload', {
+        'url': uri.toString(),
+        'path': path,
+        'title': title,
+        'userAgent': browserUa,
+      }))!;
+    } on PlatformException catch (error) {
+      commonPrint.log(
+        'System download unavailable: ${compactError(error)}',
+        logLevel: LogLevel.warning,
+      );
+      throw const SystemDownloadException(null);
+    }
+    while (true) {
+      await Future.any([
+        Future<void>.delayed(_downloadPollInterval),
+        cancelToken.whenCancel,
+      ]);
+      if (cancelToken.cancelError case final error?) {
+        throw error;
+      }
+      final state = await methodChannel.invokeMapMethod<String, Object?>(
+        'queryDownload',
+        {'id': id},
+      );
+      if (state == null) {
+        throw const SystemDownloadException(null);
+      }
+      onReceiveProgress(state['received'] as int, state['total'] as int);
+      switch (state['status']) {
+        case _downloadSuccessful:
+          return;
+        case _downloadFailed:
+          throw SystemDownloadException(state['reason'] as int?);
+      }
+    }
+  }
+
+  Future<void> clearDownloads() async {
+    await methodChannel.invokeMethod<bool>('clearDownloads');
+  }
+
+  /// An accepted update ends this process before its status can arrive.
+  Future<int?> installPackage(String path) {
+    return methodChannel.invokeMethod<int>('installPackage', {'path': path});
   }
 
   Future<bool?> openAppSettings() async {

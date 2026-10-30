@@ -626,6 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "done": MessageLookupByLibrary.simpleMessage("完了"),
     "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
     "downloadBandwidth": MessageLookupByLibrary.simpleMessage("ダウンロード帯域幅"),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage("更新をダウンロード中"),
     "duration": MessageLookupByLibrary.simpleMessage("経過時間"),
     "edit": MessageLookupByLibrary.simpleMessage("編集"),
     "editDashboard": MessageLookupByLibrary.simpleMessage("ダッシュボードを編集"),
@@ -1529,6 +1530,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "DNS を無効にすると、システム DNS を使用します。",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("停止"),
+    "stopUpdateDownloadTip": MessageLookupByLibrary.simpleMessage(
+      "アップデートのダウンロードを中止しますか？",
+    ),
     "stopVpn": MessageLookupByLibrary.simpleMessage("VPNを停止しています…"),
     "strategy": MessageLookupByLibrary.simpleMessage("戦略"),
     "strictRoute": MessageLookupByLibrary.simpleMessage("厳格なルーティング"),
@@ -1605,6 +1609,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("名称未設定"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("固定を解除"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "更新をダウンロードできませんでした。",
+    ),
+    "updateDownloadStarted": MessageLookupByLibrary.simpleMessage(
+      "アップデートのダウンロードを開始しました。進行状況はダッシュボードで確認できます。",
+    ),
+    "updateDownloadTest": MessageLookupByLibrary.simpleMessage(
+      "アップデートのダウンロードテスト",
+    ),
+    "updateFailed": MessageLookupByLibrary.simpleMessage("更新に失敗しました"),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "更新をインストールできませんでした。リリースページからダウンロードできます。",
+    ),
+    "updateNotVerified": MessageLookupByLibrary.simpleMessage(
+      "ダウンロードした更新を検証できませんでした。",
+    ),
+    "updateReady": MessageLookupByLibrary.simpleMessage("アップデートの準備完了"),
+    "updateReadyTip": MessageLookupByLibrary.simpleMessage(
+      "アップデートをダウンロードしました。タップしてインストールします。",
+    ),
+    "updateRestartTip": MessageLookupByLibrary.simpleMessage(
+      "更新をインストールするため FlClash を終了し、完了後に再び起動します。",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("アップロード帯域幅"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),

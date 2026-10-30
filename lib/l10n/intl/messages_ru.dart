@@ -762,6 +762,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "downloadBandwidth": MessageLookupByLibrary.simpleMessage(
       "Скорость загрузки",
     ),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Загрузка обновления",
+    ),
     "duration": MessageLookupByLibrary.simpleMessage("Длительность"),
     "edit": MessageLookupByLibrary.simpleMessage("Редактировать"),
     "editDashboard": MessageLookupByLibrary.simpleMessage("Изменить панель"),
@@ -1860,6 +1863,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "При отключённом DNS используется системный DNS.",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("Стоп"),
+    "stopUpdateDownloadTip": MessageLookupByLibrary.simpleMessage(
+      "Остановить загрузку обновления?",
+    ),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Остановка VPN…"),
     "strategy": MessageLookupByLibrary.simpleMessage("Стратегия"),
     "strictRoute": MessageLookupByLibrary.simpleMessage(
@@ -1956,6 +1962,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Без названия"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Открепить окно"),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось загрузить обновление.",
+    ),
+    "updateDownloadStarted": MessageLookupByLibrary.simpleMessage(
+      "Загрузка обновления началась. Следите за ходом на главной странице.",
+    ),
+    "updateDownloadTest": MessageLookupByLibrary.simpleMessage(
+      "Тест загрузки обновления",
+    ),
+    "updateFailed": MessageLookupByLibrary.simpleMessage("Не удалось обновить"),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось установить обновление. Его можно скачать на странице релиза.",
+    ),
+    "updateNotVerified": MessageLookupByLibrary.simpleMessage(
+      "Не удалось проверить загруженное обновление.",
+    ),
+    "updateReady": MessageLookupByLibrary.simpleMessage("Обновление готово"),
+    "updateReadyTip": MessageLookupByLibrary.simpleMessage(
+      "Обновление загружено. Нажмите, чтобы установить.",
+    ),
+    "updateRestartTip": MessageLookupByLibrary.simpleMessage(
+      "FlClash закроется для установки обновления и снова откроется после завершения.",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("Отдача"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("Скорость отдачи"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),

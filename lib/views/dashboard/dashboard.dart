@@ -63,7 +63,10 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       title: editing
           ? appLocalizations.editDashboard
           : appLocalizations.dashboard,
-      actions: [if (!editing && coreLib == null) const CoreStatusButton()],
+      actions: [
+        if (!editable) const UpdateStatusButton(),
+        if (!editing && coreLib == null) const CoreStatusButton(),
+      ],
       confirmationAction: editing
           ? IconButtonData(
               glyph: AppGlyphs.check,
@@ -339,13 +342,19 @@ class _MobileDashboard extends ConsumerWidget {
               // ones it has; cards this uneven move the scroll end as it goes.
               sliver: SliverToBoxAdapter(
                 child: Column(
-                  spacing: gap,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    for (final widget in widgets)
-                      RepaintBoundary(
-                        key: cardKeyOf(widget),
-                        child: widget.card,
-                      ),
+                    UpdateStatusSlot(gap: gap),
+                    Column(
+                      spacing: gap,
+                      children: [
+                        for (final widget in widgets)
+                          RepaintBoundary(
+                            key: cardKeyOf(widget),
+                            child: widget.card,
+                          ),
+                      ],
+                    ),
                   ],
                 ),
               ),

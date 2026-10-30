@@ -782,6 +782,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "downloadBandwidth": MessageLookupByLibrary.simpleMessage(
       "Bande passante de réception",
     ),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Téléchargement de la mise à jour",
+    ),
     "duration": MessageLookupByLibrary.simpleMessage("Durée"),
     "edit": MessageLookupByLibrary.simpleMessage("Modifier"),
     "editDashboard": MessageLookupByLibrary.simpleMessage(
@@ -1920,6 +1923,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Si DNS est désactivé, le DNS du système est utilisé.",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("Arrêter"),
+    "stopUpdateDownloadTip": MessageLookupByLibrary.simpleMessage(
+      "Arrêter le téléchargement de la mise à jour ?",
+    ),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Arrêt du VPN…"),
     "strategy": MessageLookupByLibrary.simpleMessage("Stratégie"),
     "strictRoute": MessageLookupByLibrary.simpleMessage("Route stricte"),
@@ -2014,6 +2020,31 @@ class MessageLookup extends MessageLookupByLibrary {
       "Désépingler la fenêtre",
     ),
     "update": MessageLookupByLibrary.simpleMessage("Mettre à jour"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "Impossible de télécharger la mise à jour.",
+    ),
+    "updateDownloadStarted": MessageLookupByLibrary.simpleMessage(
+      "Téléchargement de la mise à jour lancé. Suivez la progression sur le tableau de bord.",
+    ),
+    "updateDownloadTest": MessageLookupByLibrary.simpleMessage(
+      "Test de téléchargement de mise à jour",
+    ),
+    "updateFailed": MessageLookupByLibrary.simpleMessage(
+      "Échec de la mise à jour",
+    ),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "Impossible d\'installer la mise à jour. Vous pouvez la télécharger depuis la page de publication.",
+    ),
+    "updateNotVerified": MessageLookupByLibrary.simpleMessage(
+      "La mise à jour téléchargée n\'a pas pu être vérifiée.",
+    ),
+    "updateReady": MessageLookupByLibrary.simpleMessage("Mise à jour prête"),
+    "updateReadyTip": MessageLookupByLibrary.simpleMessage(
+      "La mise à jour est téléchargée. Touchez pour l’installer.",
+    ),
+    "updateRestartTip": MessageLookupByLibrary.simpleMessage(
+      "FlClash se ferme pour installer la mise à jour et se rouvre une fois terminée.",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("Envoi"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage(
       "Bande passante d’envoi",

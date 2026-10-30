@@ -102,6 +102,59 @@ abstract class _$AuthorizedTunEnable extends $Notifier<TunAuthorizationState> {
   }
 }
 
+@ProviderFor(UpdateDownloadState)
+final updateDownloadStateProvider = UpdateDownloadStateProvider._();
+
+final class UpdateDownloadStateProvider
+    extends $NotifierProvider<UpdateDownloadState, UpdateDownload?> {
+  UpdateDownloadStateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'updateDownloadStateProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$updateDownloadStateHash();
+
+  @$internal
+  @override
+  UpdateDownloadState create() => UpdateDownloadState();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UpdateDownload? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UpdateDownload?>(value),
+    );
+  }
+}
+
+String _$updateDownloadStateHash() =>
+    r'31a28cbffa1d4a3c35a478262ef61c10271048c9';
+
+abstract class _$UpdateDownloadState extends $Notifier<UpdateDownload?> {
+  UpdateDownload? build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<UpdateDownload?, UpdateDownload?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<UpdateDownload?, UpdateDownload?>,
+              UpdateDownload?,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
 @ProviderFor(Logs)
 final logsProvider = LogsProvider._();
 

@@ -738,6 +738,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "downloadBandwidth": MessageLookupByLibrary.simpleMessage(
       "Download bandwidth",
     ),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Downloading update",
+    ),
     "duration": MessageLookupByLibrary.simpleMessage("Duration"),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
     "editDashboard": MessageLookupByLibrary.simpleMessage("Edit dashboard"),
@@ -1778,6 +1781,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "With DNS off, the system DNS is used.",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("Stop"),
+    "stopUpdateDownloadTip": MessageLookupByLibrary.simpleMessage(
+      "Stop downloading the update?",
+    ),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Stopping VPN…"),
     "strategy": MessageLookupByLibrary.simpleMessage("Strategy"),
     "strictRoute": MessageLookupByLibrary.simpleMessage("Strict route"),
@@ -1864,6 +1870,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Unpin window"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "The update could not be downloaded.",
+    ),
+    "updateDownloadStarted": MessageLookupByLibrary.simpleMessage(
+      "Downloading the update. Follow its progress on the dashboard.",
+    ),
+    "updateDownloadTest": MessageLookupByLibrary.simpleMessage(
+      "Update download test",
+    ),
+    "updateFailed": MessageLookupByLibrary.simpleMessage("Update failed"),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "The update could not be installed. You can download it from the release page instead.",
+    ),
+    "updateNotVerified": MessageLookupByLibrary.simpleMessage(
+      "The downloaded update could not be verified.",
+    ),
+    "updateReady": MessageLookupByLibrary.simpleMessage("Update ready"),
+    "updateReadyTip": MessageLookupByLibrary.simpleMessage(
+      "The update has downloaded. Tap to install it.",
+    ),
+    "updateRestartTip": MessageLookupByLibrary.simpleMessage(
+      "FlClash closes to install the update and opens again when it is done.",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("Upload"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("Upload bandwidth"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),

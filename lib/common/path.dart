@@ -89,6 +89,15 @@ class AppPath {
     return join(mTempDir.path, 'temp$uniqueId');
   }
 
+  /// On Android the app's external downloads directory, the one the system
+  /// download manager can write to.
+  Future<String> get updateDirPath async {
+    final directory = system.isAndroid
+        ? await downloadDirPath
+        : (await cacheDir.future).path;
+    return join(directory, 'update');
+  }
+
   Future<String> get lockFilePath async {
     final homeDirPath = await appPath.homeDirPath;
     return join(homeDirPath, 'FlClash.lock');

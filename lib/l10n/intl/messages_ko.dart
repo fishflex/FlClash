@@ -615,6 +615,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "done": MessageLookupByLibrary.simpleMessage("완료"),
     "download": MessageLookupByLibrary.simpleMessage("다운로드"),
     "downloadBandwidth": MessageLookupByLibrary.simpleMessage("다운로드 대역폭"),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage("업데이트 다운로드 중"),
     "duration": MessageLookupByLibrary.simpleMessage("소요 시간"),
     "edit": MessageLookupByLibrary.simpleMessage("편집"),
     "editDashboard": MessageLookupByLibrary.simpleMessage("대시보드 편집"),
@@ -1500,6 +1501,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "DNS를 끄면 시스템 DNS를 사용합니다.",
     ),
     "stop": MessageLookupByLibrary.simpleMessage("중지"),
+    "stopUpdateDownloadTip": MessageLookupByLibrary.simpleMessage(
+      "업데이트 다운로드를 중지할까요?",
+    ),
     "stopVpn": MessageLookupByLibrary.simpleMessage("VPN 중지 중…"),
     "strategy": MessageLookupByLibrary.simpleMessage("전략"),
     "strictRoute": MessageLookupByLibrary.simpleMessage("엄격한 라우팅"),
@@ -1580,6 +1584,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("이름 없음"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("창 고정 해제"),
     "update": MessageLookupByLibrary.simpleMessage("업데이트"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "업데이트를 다운로드할 수 없습니다.",
+    ),
+    "updateDownloadStarted": MessageLookupByLibrary.simpleMessage(
+      "업데이트 다운로드를 시작했습니다. 진행 상황은 대시보드에서 확인하세요.",
+    ),
+    "updateDownloadTest": MessageLookupByLibrary.simpleMessage("업데이트 다운로드 테스트"),
+    "updateFailed": MessageLookupByLibrary.simpleMessage("업데이트 실패"),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "업데이트를 설치할 수 없습니다. 릴리스 페이지에서 직접 다운로드할 수 있습니다.",
+    ),
+    "updateNotVerified": MessageLookupByLibrary.simpleMessage(
+      "다운로드한 업데이트를 확인할 수 없습니다.",
+    ),
+    "updateReady": MessageLookupByLibrary.simpleMessage("업데이트 준비 완료"),
+    "updateReadyTip": MessageLookupByLibrary.simpleMessage(
+      "업데이트를 다운로드했습니다. 눌러서 설치하세요.",
+    ),
+    "updateRestartTip": MessageLookupByLibrary.simpleMessage(
+      "업데이트를 설치하기 위해 FlClash가 종료되며, 완료되면 다시 열립니다.",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("업로드"),
     "uploadBandwidth": MessageLookupByLibrary.simpleMessage("업로드 대역폭"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
