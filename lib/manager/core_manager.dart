@@ -11,6 +11,7 @@ import 'package:fl_clash/providers/core.dart';
 import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/route_state.dart';
 import 'package:fl_clash/providers/state.dart';
+import 'package:fl_clash/ui/banner.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -111,7 +112,7 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     if (log.logLevel == LogLevel.error) {
       throttler.call(
         FunctionTag.coreErrorNotifier,
-        () => dialogs.showNotifier(log.payload, level: MessageLevel.error),
+        () => dialogs.showBanner(log.payload, level: BannerLevel.error),
         duration: const Duration(seconds: 3),
         fire: true,
       );
@@ -123,9 +124,9 @@ class _CoreContainerState extends ConsumerState<CoreManager>
   void onDialerLoop(String proxyName) {
     throttler.call(
       FunctionTag.dialerLoopNotifier,
-      () => dialogs.showNotifier(
+      () => dialogs.showBanner(
         currentAppLocalizations.dialerProxyLoopStopped(proxyName),
-        level: MessageLevel.error,
+        level: BannerLevel.error,
       ),
       duration: const Duration(seconds: 3),
       fire: true,
@@ -176,7 +177,7 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     }
     ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
     if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
-      context.showNotifier(message, level: MessageLevel.error);
+      dialogs.showBanner(message, level: BannerLevel.error);
     }
     super.onCrash(message);
   }

@@ -4,13 +4,12 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/dashboard/layout.dart';
 import 'package:fl_clash/views/dashboard/widgets/update_status.dart';
 import 'package:flutter/widgets.dart';
-import 'package:prism_ui/metrics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart'
-    show LinearProgressIndicator, Scaffold;
 
 import '../../helpers/test_app.dart';
+import 'package:prism_ui/prism_ui.dart';
+import '../../helpers/host_scaffold.dart';
 
 void main() {
   late ProviderContainer container;
@@ -28,7 +27,7 @@ void main() {
         container: container,
         child: const TestApp(
           locale: Locale('en'),
-          child: Scaffold(
+          child: HostScaffold(
             body: Align(
               alignment: Alignment.topLeft,
               child: SizedBox(

@@ -96,7 +96,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(label) => "${label} existe déjà";
 
-  static String m28(count) => "${count} éléments en échec";
+  static String m28(count) =>
+      "${count} éléments en échec. Appuyez pour afficher";
 
   static String m29(label, message) => "${label} : ${message}";
 
@@ -658,6 +659,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Le proxy de connexion est la sortie utilisée pour joindre le serveur NTP.",
     ),
     "dialerProxyLoopStopped": m25,
+    "dialog": MessageLookupByLibrary.simpleMessage("Boîte de dialogue"),
     "direct": MessageLookupByLibrary.simpleMessage("Direct"),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "Désactiver le transfert ICMP",
@@ -2064,7 +2066,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "virtualIpv4": MessageLookupByLibrary.simpleMessage("IPv4 virtuelle"),
     "vividStyle": MessageLookupByLibrary.simpleMessage("Vif"),
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "Modification de la configuration liée au VPN détectée",
+      "La configuration liée au VPN a changé. Appuyez pour redémarrer",
     ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "Le VPN fait passer automatiquement tout le trafic du système par VpnService.",

@@ -81,7 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(label) => "${label}はすでに存在します";
 
-  static String m28(count) => "${count} 件が失敗しました";
+  static String m28(count) => "${count} 件が失敗しました。タップして表示";
 
   static String m29(label, message) => "${label}：${message}";
 
@@ -524,6 +524,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ダイヤラープロキシは NTP サーバーへの接続に使用するアウトバウンドです。",
     ),
     "dialerProxyLoopStopped": m25,
+    "dialog": MessageLookupByLibrary.simpleMessage("ダイアログ"),
     "direct": MessageLookupByLibrary.simpleMessage("ダイレクト"),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "ICMP 転送を無効化",
@@ -1647,7 +1648,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "virtualIpv4": MessageLookupByLibrary.simpleMessage("仮想 IPv4"),
     "vividStyle": MessageLookupByLibrary.simpleMessage("ビビッド"),
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "VPN関連の設定変更を検出しました",
+      "VPN関連の設定が変更されました。タップして再起動",
     ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "VPN は VpnService でシステムの全トラフィックを自動的にルーティングします。",

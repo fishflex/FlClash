@@ -10,10 +10,9 @@ import 'package:fl_clash/views/dashboard/style.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart'
-    show Colors, LinearProgressIndicator, Tooltip;
 
 import 'card.dart';
+import 'package:prism_ui/prism_ui.dart';
 
 String _progressText(UpdateDownloading download) {
   final received = download.received.traffic.show;

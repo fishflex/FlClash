@@ -5,7 +5,7 @@ import 'package:fl_clash/views/config/filters.dart';
 import 'package:fl_clash/views/config/icon_sets.dart';
 import 'package:fl_clash/views/config/providers.dart';
 import 'package:fl_clash/views/profiles/custom/custom_proxies.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 
 class CustomResourcesView extends StatelessWidget {
   const CustomResourcesView({super.key});

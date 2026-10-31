@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/ui/icons/glyph.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:prism_ui/icons/glyph.dart';
 
 import 'clash_config.dart';
 
@@ -60,22 +60,27 @@ extension PackagesExt on List<Package> {
     required bool isFilterNonInternetApp,
   }) {
     final pinned = pinedList.toSet();
-    return whereVisible(
+    final first = <Package>[];
+    final rest = <Package>[];
+    for (final package in whereVisible(
       isFilterSystemApp: isFilterSystemApp,
       isFilterNonInternetApp: isFilterNonInternetApp,
-    ).sorted((a, b) {
-      final isSelectA = pinned.contains(a.packageName);
-      final isSelectB = pinned.contains(b.packageName);
-
-      if (isSelectA != isSelectB) {
-        return isSelectA ? -1 : 1;
-      }
-      return switch (sortType) {
-        AccessSortType.none => 0,
-        AccessSortType.name => a.label.compareTo(b.label),
-        AccessSortType.time => b.lastUpdateTime.compareTo(a.lastUpdateTime),
-      };
-    });
+    )) {
+      (pinned.contains(package.packageName) ? first : rest).add(package);
+    }
+    final compare = switch (sortType) {
+      AccessSortType.none => null,
+      AccessSortType.name => (Package a, Package b) => a.label.compareTo(
+        b.label,
+      ),
+      AccessSortType.time =>
+        (Package a, Package b) => b.lastUpdateTime.compareTo(a.lastUpdateTime),
+    };
+    if (compare != null) {
+      first.sort(compare);
+      rest.sort(compare);
+    }
+    return first..addAll(rest);
   }
 }
 
@@ -452,6 +457,19 @@ extension FileInfoFileExt on File {
     final size = await length();
     final lastModified = await _getValidLastModified();
     return FileInfo(size: size, lastModified: lastModified);
+  }
+
+  /// One stat call, for reading many files in a batch.
+  FileInfo? getFileInfoSync() {
+    final stat = statSync();
+    if (stat.type != FileSystemEntityType.file) {
+      return null;
+    }
+    final modified = stat.modified;
+    return FileInfo(
+      size: stat.size,
+      lastModified: modified.year > 1970 ? modified : null,
+    );
   }
 
   Future<DateTime?> _getValidLastModified() async {

@@ -7,8 +7,9 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart' show SelectableText;
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class LogListController extends ValueNotifier<LogsState> {
@@ -52,6 +53,7 @@ class LogsView extends ConsumerStatefulWidget {
 class _LogsViewState extends ConsumerState<LogsView>
     with RouteMotionHoldMixin<LogsView> {
   final _listController = LogListController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   late final ScrollController _scrollController;
   late final _physics = FollowEndScrollPhysics(
     isFollowing: () => _listController.value.autoScrollToEnd,
@@ -101,6 +103,10 @@ class _LogsViewState extends ConsumerState<LogsView>
     );
   }
 
+  void _addKeyword(String keyword) {
+    _scaffoldKey.currentState?.addKeyword(keyword);
+  }
+
   void updateLogsThrottler() {
     throttler.call(FunctionTag.logs, () {
       if (!mounted) {
@@ -115,7 +121,8 @@ class _LogsViewState extends ConsumerState<LogsView>
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return CommonScaffold(
+    return Scaffold(
+      key: _scaffoldKey,
       iconActions: _buildActions(),
       onKeywordsUpdate: _listController.updateKeywords,
       searchState: AppBarSearchState(onSearch: _listController.search),
@@ -165,11 +172,9 @@ class _LogsViewState extends ConsumerState<LogsView>
                         const SizedBox(height: recordListGap),
                     itemBuilder: (_, index) {
                       final log = logs[index];
-                      return LogItem(
-                        log: log,
-                        onClick: (value) {
-                          context.commonScaffoldState?.addKeyword(value);
-                        },
+                      return MemoBuilder(
+                        inputs: [log],
+                        builder: (_) => LogItem(log: log, onClick: _addKeyword),
                       );
                     },
                   ),
@@ -233,13 +238,18 @@ class _LogBody extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SelectableText(payload.message, style: styles.primary),
+          SelectableText(
+            payload.message,
+            style: styles.primary,
+            contextMenuBuilder: TextSelectionMenu.editableText,
+          ),
           if (payload.tag.isNotEmpty)
             Text(payload.tag, style: styles.secondary),
         ],
       );
     }
     return SelectableText.rich(
+      contextMenuBuilder: TextSelectionMenu.editableText,
       TextSpan(
         children: [
           TextSpan(text: route.destination, style: styles.title),

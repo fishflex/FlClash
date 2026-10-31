@@ -7,13 +7,14 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/config/filters.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/test_app.dart';
 import '../helpers/test_profiles.dart';
+import 'package:prism_ui/prism_ui.dart';
 
 class _MockCore extends Mock implements CoreHandlerInterface {}
 
@@ -185,7 +186,7 @@ void main() {
       filters: const [Filter(label: 'A', regex: 'a')],
     );
 
-    await tester.tap(find.byType(CommonCheckBox));
+    await tester.tap(find.byType(Checkbox));
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip(currentAppLocalizations.delete));
     await tester.pumpAndSettle();

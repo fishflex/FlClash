@@ -7,7 +7,7 @@ import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/config/sniffer.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -106,7 +106,7 @@ void main() {
     await tester.pump();
 
     expect(find.text(currentAppLocalizations.status), findsOneWidget);
-    await tester.tap(find.byType(CommonSwitch).last);
+    await tester.tap(find.byType(Switch).last);
     await tester.pump();
     expect(config().sniffer.enable, isTrue);
 

@@ -1,9 +1,10 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/features/features.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' as material show Scaffold;
 
 import '../helpers/test_app.dart';
 
@@ -44,7 +45,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       TestApp(
-        homeBuilder: (child) => Scaffold(body: child),
+        homeBuilder: (child) => material.Scaffold(body: child),
         child: SheetProvider(
           type: SheetType.page,
           child: TrackerInfoDetailView(
@@ -85,7 +86,7 @@ void main() {
   testWidgets('TrackerInfoDetailView omits empty fields', (tester) async {
     await tester.pumpWidget(
       TestApp(
-        homeBuilder: (child) => Scaffold(body: child),
+        homeBuilder: (child) => material.Scaffold(body: child),
         child: SheetProvider(
           type: SheetType.page,
           child: TrackerInfoDetailView(trackerInfo: _tracker()),
@@ -108,7 +109,7 @@ void main() {
     await tester.pumpWidget(
       TestApp(
         wrapInProviderScope: true,
-        homeBuilder: (child) => Scaffold(body: child),
+        homeBuilder: (child) => material.Scaffold(body: child),
         child: TrackerInfoItem(
           trackerInfo: _tracker(chains: const ['Proxy A', 'Proxy B']),
           detailTitle: 'detail',
@@ -137,7 +138,7 @@ void main() {
     await tester.pumpWidget(
       TestApp(
         wrapInProviderScope: true,
-        homeBuilder: (child) => Scaffold(body: child),
+        homeBuilder: (child) => material.Scaffold(body: child),
         child: TrackerInfoItem(
           trackerInfo: _tracker(
             rulePayload: 'example.com',
@@ -175,7 +176,7 @@ void main() {
       await tester.pumpWidget(
         TestApp(
           wrapInProviderScope: true,
-          homeBuilder: (child) => Scaffold(body: child),
+          homeBuilder: (child) => material.Scaffold(body: child),
           child: TrackerInfoItem(
             key: ValueKey(isLive),
             trackerInfo: _tracker(
@@ -213,7 +214,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       TestApp(
-        homeBuilder: (child) => Scaffold(body: child),
+        homeBuilder: (child) => material.Scaffold(body: child),
         child: SheetProvider(
           type: SheetType.page,
           child: TrackerInfoDetailView(

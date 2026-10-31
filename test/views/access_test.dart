@@ -10,13 +10,14 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/glyph_finders.dart';
 import '../helpers/test_app.dart';
 import '../helpers/test_profiles.dart';
+import 'package:prism_ui/prism_ui.dart';
 
 Package _package(
   String name, {
@@ -178,7 +179,7 @@ void main() {
       await pumpAccessView(tester);
       final l10n = AppLocalizations.current;
       Finder inMenu(Finder finder) =>
-          find.descendant(of: find.byType(CommonPopupMenu), matching: finder);
+          find.descendant(of: find.byType(PopupMenu), matching: finder);
 
       await openBarMenu(tester);
       await tester.tap(inMenu(find.text(l10n.settings)).last);
@@ -190,7 +191,7 @@ void main() {
       final state = container.read(accessControlStateProvider);
       expect(state.isFilterSystemApp, isFalse);
       expect(state.isFilterNonInternetApp, isTrue);
-      expect(find.byType(CommonPopupMenu), findsNothing);
+      expect(find.byType(PopupMenu), findsNothing);
       expect(find.text('Settings'), findsOneWidget);
 
       await teardownView(tester);
@@ -201,7 +202,7 @@ void main() {
       await pumpAccessView(tester);
       final l10n = AppLocalizations.current;
       Finder inMenu(Finder finder) =>
-          find.descendant(of: find.byType(CommonPopupMenu), matching: finder);
+          find.descendant(of: find.byType(PopupMenu), matching: finder);
 
       await openBarMenu(tester);
       await tester.tap(inMenu(find.text(l10n.settings)).last);
@@ -399,7 +400,7 @@ void main() {
       await pumpAccessView(tester);
       final l10n = AppLocalizations.current;
       Finder inMenu(Finder finder) =>
-          find.descendant(of: find.byType(CommonPopupMenu), matching: finder);
+          find.descendant(of: find.byType(PopupMenu), matching: finder);
       Finder checkOn(String label) => inMenu(
         find.descendant(
           of: find.ancestor(of: find.text(label), matching: find.byType(Row)),
@@ -487,6 +488,43 @@ void main() {
 
     expect(systemAction.loadCount, 1);
     expect(find.text('Fresh'), findsOneWidget);
+
+    await teardownView(tester);
+  });
+
+  testWidgets('reads the app list only once its push has settled', (
+    tester,
+  ) async {
+    container.read(packagesProvider.notifier).value = [];
+    systemAction.grantedPackages = _packages;
+    seedAccessControl(const AccessControlProps(enable: true));
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestApp(
+          child: Builder(
+            builder: (context) => FilledButton(
+              onPressed: () => BaseNavigator.push(context, const AccessView()),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    final route = ModalRoute.of(tester.element(find.byType(AccessView)))!;
+
+    expect(route.animation!.isAnimating, isTrue);
+    expect(systemAction.loadCount, 0);
+    expect(find.byType(ActivityIndicator), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 1));
+    expect(systemAction.loadCount, 1);
+    await tester.pumpAndSettle();
+    expect(find.text('Chat'), findsOneWidget);
+    expect(find.byType(ActivityIndicator), findsNothing);
 
     await teardownView(tester);
   });
@@ -606,5 +644,30 @@ void main() {
 
       await teardownView(tester);
     });
+  });
+
+  testWidgets('toggling an app rebuilds its row, not the page', (tester) async {
+    seedAccessControl(
+      const AccessControlProps(enable: true, isFilterSystemApp: false),
+    );
+    await pumpAccessView(tester);
+    await tester.tap(find.text('Chat'));
+    await tester.pump();
+
+    final rebuilt = <Type>[];
+    debugOnRebuildDirtyWidget = (element, _) {
+      if (element.widget case AccessView() || PackageListItem()) {
+        rebuilt.add(element.widget.runtimeType);
+      }
+    };
+    try {
+      await tester.tap(find.text('Browser'));
+      await tester.pump();
+    } finally {
+      debugOnRebuildDirtyWidget = null;
+    }
+    expect(rebuilt, [PackageListItem]);
+
+    await teardownView(tester);
   });
 }

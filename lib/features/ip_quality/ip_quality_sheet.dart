@@ -6,7 +6,7 @@ import 'package:fl_clash/providers/ip_quality.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 
 import 'ip_quality_text.dart';
 import 'labels.dart';
@@ -34,7 +34,7 @@ class _IpQualitySheet extends ConsumerWidget {
     final isLoading = ref.watch(
       ipQualityProvider(ip).select((result) => result.isLoading),
     );
-    return CommonScaffold(
+    return Scaffold(
       title: localizations.outboundIp,
       actions: [
         AppBarActionButton(
@@ -65,7 +65,7 @@ class _HideIpItem extends ConsumerWidget {
     return DecorationListItem(
       title: Text(context.appLocalizations.hideIp),
       onPressed: () => update(!hideIp),
-      trailing: CommonSwitch(value: hideIp, onChanged: update),
+      trailing: Switch(value: hideIp, onChanged: update),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/ui/color.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'app.dart';
@@ -15,25 +14,6 @@ part 'generated/state.g.dart';
 @freezed
 abstract class SelectValue<T> with _$SelectValue<T> {
   const factory SelectValue(T value) = _SelectValue;
-}
-
-@freezed
-abstract class CommonMessage with _$CommonMessage {
-  const factory CommonMessage({
-    required String id,
-    required String text,
-    @Default(MessageLevel.info) MessageLevel level,
-    @Default(Duration(seconds: 3)) Duration duration,
-    MessageActionState? actionState,
-  }) = _CommonMessage;
-}
-
-@freezed
-abstract class MessageActionState with _$MessageActionState {
-  const factory MessageActionState({
-    required String actionText,
-    required VoidCallback action,
-  }) = _MessageActionState;
 }
 
 @freezed

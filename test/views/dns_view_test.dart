@@ -9,12 +9,13 @@ import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/config/dns.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/test_app.dart';
 import '../helpers/test_profiles.dart';
+import 'package:prism_ui/prism_ui.dart';
 
 const _profileId = 1;
 
@@ -185,7 +186,7 @@ void main() {
     await tester.tap(find.text(currentAppLocalizations.dnsMode));
     await tester.pumpAndSettle();
 
-    expect(find.byType(CommonPopupMenu), findsNothing);
+    expect(find.byType(PopupMenu), findsNothing);
     expect(config().dnsOverrideKeys, {DnsOverrideKey.enhancedMode});
     expect(config().dns.enhancedMode, defaultDns.enhancedMode);
     expect(defaultDns.enhancedMode, DnsMode.redirHost);
@@ -200,7 +201,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('IPv6'), findsOneWidget);
-    await tester.tap(find.byType(CommonSwitch).last);
+    await tester.tap(find.byType(Switch).last);
     await tester.pump();
     expect(config().dns.ipv6, isTrue);
 

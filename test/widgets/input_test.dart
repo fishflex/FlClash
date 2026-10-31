@@ -5,7 +5,18 @@ import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart'
+    show
+        Colors,
+        Material,
+        ReorderableListView,
+        TextField,
+        TextFormField,
+        showDialog;
+import 'package:material_ui/material_ui.dart'
+    as material
+    show AlertDialog, Checkbox, Scaffold;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -23,7 +34,7 @@ void main() {
     await tester.pumpWidget(
       TestApp(
         overrides: [_viewSizeOverride],
-        child: Scaffold(
+        child: material.Scaffold(
           body: ListItem.toggle(
             title: const Text('Enabled'),
             value: false,
@@ -44,16 +55,15 @@ void main() {
     await tester.pumpWidget(
       TestApp(
         overrides: [_viewSizeOverride],
-        child: Scaffold(
+        child: material.Scaffold(
           body: ListItem.toggle(title: const Text('Disabled'), value: false),
         ),
       ),
     );
 
-    final tile = tester.widget<ListTile>(find.byType(ListTile));
-    final control = tester.widget<CommonSwitch>(find.byType(CommonSwitch));
+    final control = tester.widget<Switch>(find.byType(Switch));
 
-    expect(tile.onTap, isNull);
+    expect(find.byType(PressSurface), findsNothing);
     expect(control.onChanged, isNull);
 
     await tester.tap(find.text('Disabled'));
@@ -68,7 +78,7 @@ void main() {
     await tester.pumpWidget(
       TestApp(
         overrides: [_viewSizeOverride],
-        child: Scaffold(
+        child: material.Scaffold(
           body: generateSection(
             items: [
               ListItem.toggle(
@@ -114,7 +124,7 @@ void main() {
     await tester.pumpWidget(
       TestApp(
         overrides: [_viewSizeOverride],
-        child: Scaffold(
+        child: material.Scaffold(
           body: ListItem.checkbox(
             title: const Text('Selected'),
             onChanged: (value) {
@@ -144,7 +154,7 @@ void main() {
               (_, _) => const Size(1200, 1000),
             ),
           ],
-          child: Scaffold(
+          child: material.Scaffold(
             body: ListItem.input(
               title: const Text('Port'),
               dialogTitle: 'Port',
@@ -213,7 +223,7 @@ void main() {
     await tester.pumpWidget(
       TestApp(
         overrides: [_viewSizeOverride],
-        child: Scaffold(
+        child: material.Scaffold(
           body: ListItem<String?>.options(
             title: const Text('Language'),
             options: const [null, 'en'],
@@ -231,10 +241,10 @@ void main() {
     await tester.tap(find.text('Language'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(CommonPopupMenu), findsOneWidget);
+    expect(find.byType(PopupMenu), findsOneWidget);
     expect(
       find.descendant(
-        of: find.byType(CommonPopupMenu),
+        of: find.byType(PopupMenu),
         matching: find.byGlyph(AppGlyphs.check),
       ),
       findsOneWidget,
@@ -371,7 +381,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final scrollables = find.descendant(
-      of: find.byType(AlertDialog),
+      of: find.byType(material.AlertDialog),
       matching: find.byType(Scrollable),
     );
     expect(scrollables, findsWidgets);
@@ -501,7 +511,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('d'), findsOneWidget);
 
-    await tester.tap(find.byType(Checkbox).first);
+    await tester.tap(find.byType(material.Checkbox).first);
     await tester.pump();
     expect(find.byGlyph(AppGlyphs.delete), findsOneWidget);
     await tester.tap(find.byTooltip('Select all'));
@@ -520,12 +530,12 @@ void main() {
       ProviderScope(
         child: TestApp(
           overrides: [_viewSizeOverride],
-          child: Scaffold(
+          child: material.Scaffold(
             body: Builder(
               builder: (context) => TextButton(
                 onPressed: () async {
                   result = await Navigator.of(context).push<Object?>(
-                    CommonRoute<Object?>(
+                    CardPageRoute<Object?>(
                       builder: (_) => const ListEditView(
                         title: 'Items',
                         items: ['a', 'b'],
@@ -634,7 +644,7 @@ void main() {
     expect(find.text('cccc'), findsOneWidget);
     expect(find.text('3333'), findsOneWidget);
 
-    await tester.tap(find.byType(Checkbox).first);
+    await tester.tap(find.byType(material.Checkbox).first);
     await tester.pump();
     await tester.tap(find.byTooltip('Select all'));
     await tester.pump();

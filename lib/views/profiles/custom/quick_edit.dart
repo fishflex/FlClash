@@ -4,7 +4,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 
 IconButtonData customQuickEditAction(
   BuildContext context, {
@@ -74,7 +74,7 @@ Future<void> showCustomQuickEdit(
   );
   return sheetNavigatorOf(context).push(
     context.isMobileView
-        ? CommonRoute(builder: (_) => page)
-        : CommonDesktopRoute(builder: (_) => page),
+        ? CardPageRoute(builder: (_) => page)
+        : FadePageRoute(builder: (_) => page),
   );
 }

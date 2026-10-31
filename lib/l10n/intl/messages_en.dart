@@ -92,7 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(label) => "${label} already exists";
 
-  static String m28(count) => "${count} items failed";
+  static String m28(count) => "${count} items failed. Tap to view";
 
   static String m29(label, message) => "${label}: ${message}";
 
@@ -614,6 +614,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Dialer proxy is the outbound used to reach the NTP server.",
     ),
     "dialerProxyLoopStopped": m25,
+    "dialog": MessageLookupByLibrary.simpleMessage("Dialog"),
     "direct": MessageLookupByLibrary.simpleMessage("Direct"),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "Disable ICMP forwarding",
@@ -1908,7 +1909,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "virtualIpv4": MessageLookupByLibrary.simpleMessage("Virtual IPv4"),
     "vividStyle": MessageLookupByLibrary.simpleMessage("Vivid"),
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "VPN-related configuration change detected",
+      "VPN settings changed. Tap to restart",
     ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "VPN routes all system traffic through VpnService automatically.",

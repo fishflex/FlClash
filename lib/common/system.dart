@@ -9,8 +9,10 @@ import 'package:fl_clash/common/system_dns.dart';
 import 'package:fl_clash/core/desktop/helper_client.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/plugins/app.dart';
+import 'package:fl_clash/ui/banner.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart';
+import 'package:prism_ui/banner.dart';
 
 typedef ProcessRunner =
     Future<ProcessResult> Function(String executable, List<String> arguments);
@@ -369,9 +371,9 @@ Future<AuthorizeCode> registerHelperService(
         'falling back to direct Core',
         logLevel: LogLevel.warning,
       );
-      dialogs.showNotifier(
+      dialogs.showBanner(
         currentAppLocalizations.helperCorruptTip,
-        level: MessageLevel.error,
+        level: BannerLevel.error,
       );
       return AuthorizeCode.error;
     case HelperReadiness.notReady:
