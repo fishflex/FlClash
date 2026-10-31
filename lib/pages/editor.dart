@@ -5,11 +5,11 @@ import 'dart:io' show PathNotFoundException;
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/editor/editor.dart';
-import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/services.dart';
@@ -342,7 +342,7 @@ class _EditorPageState extends ConsumerState<EditorPage>
     final fontSize = ref.watch(
       appSettingProvider.select((state) => state.editorFontSize),
     );
-    return CommonPopScope(
+    return PopGuard(
       onPop: _handlePop,
       child: CallbackShortcuts(
         bindings: {
@@ -352,7 +352,7 @@ class _EditorPageState extends ConsumerState<EditorPage>
         },
         child: Focus(
           autofocus: true,
-          child: CommonScaffold(
+          child: Scaffold(
             titleWidget: _EditorTitleField(
               controller: _titleController,
               enabled: widget.titleEditable,
@@ -374,22 +374,22 @@ class _EditorPageState extends ConsumerState<EditorPage>
                         : null,
                   ),
             menuItems: [
-              CommonPopupMenuItem(
+              PopupMenuItem(
                 glyph: AppGlyphs.undo,
                 label: appLocalizations.undo,
                 onPressed: _barState.canUndo ? _undoController.undo : null,
               ),
-              CommonPopupMenuItem(
+              PopupMenuItem(
                 glyph: AppGlyphs.redo,
                 label: appLocalizations.redo,
                 onPressed: _barState.canRedo ? _undoController.redo : null,
               ),
-              CommonPopupMenuItem(
+              PopupMenuItem(
                 glyph: AppGlyphs.textSize,
                 label: appLocalizations.fontSize,
                 subItems: [
                   for (final size in EditorFontSize.values)
-                    CommonPopupMenuItem(
+                    PopupMenuItem(
                       label: switch (size) {
                         EditorFontSize.standard => appLocalizations.standard,
                         EditorFontSize.large => appLocalizations.large,
@@ -405,7 +405,7 @@ class _EditorPageState extends ConsumerState<EditorPage>
                     ),
                 ],
               ),
-              CommonPopupMenuItem(
+              PopupMenuItem(
                 glyph: AppGlyphs.wrap,
                 label: appLocalizations.lineWrap,
                 checked: lineWrap,
@@ -564,6 +564,7 @@ class _EditorTitleField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      contextMenuBuilder: TextSelectionMenu.editableText,
       maxLength: TextInputLimits.name,
       enabled: enabled,
       controller: controller,
@@ -626,7 +627,7 @@ class _EditorBody extends StatelessWidget {
               ? Container(
                   color: context.colorScheme.surface,
                   alignment: Alignment.center,
-                  child: const CommonCircleLoading.page(),
+                  child: const ActivityIndicator.page(),
                 )
               : const SizedBox.shrink(),
         ),
@@ -733,7 +734,7 @@ class _CodeEditorState extends ConsumerState<_CodeEditor> {
       _editorTheme = _highlightTheme(colorScheme, widget.language);
       _selectionStyle = CodeSelectionStyle(
         cursorColor: colorScheme.primary,
-        selectionColor: colorScheme.primary.opacity30,
+        selectionColor: textSelectionColorOf(colorScheme),
         cursorBubbleColor: colorScheme.primary,
       );
     }
@@ -762,9 +763,9 @@ class _CodeEditorState extends ConsumerState<_CodeEditor> {
     if (!mounted) {
       return;
     }
-    dialogs.showNotifier(
+    dialogs.showBanner(
       context.appLocalizations.clipboardWriteFailed,
-      level: MessageLevel.error,
+      level: BannerLevel.error,
     );
   }
 
@@ -773,66 +774,110 @@ class _CodeEditorState extends ConsumerState<_CodeEditor> {
     CodeForgeContextMenuRequest request,
   ) {
     final appLocalizations = context.appLocalizations;
-    final items = [
-      if (request.hasSelection && !request.readOnly)
-        CommonPopupMenuItem(
-          glyph: AppGlyphs.cut,
-          label: appLocalizations.cut,
-          onPressed: request.cut,
-        ),
-      if (request.hasSelection)
-        CommonPopupMenuItem(
-          glyph: AppGlyphs.copy,
-          label: appLocalizations.copy,
-          onPressed: request.copy,
-        ),
-      if (!request.readOnly)
-        CommonPopupMenuItem(
-          glyph: AppGlyphs.paste,
-          label: appLocalizations.paste,
-          onPressed: request.paste,
-        ),
-      if (!request.isAllSelected)
-        CommonPopupMenuItem(
-          glyph: AppGlyphs.selectAll,
-          label: appLocalizations.selectAll,
-          onPressed: request.selectAll,
-        ),
-    ];
     final navigator = Navigator.of(context);
     final navigatorBox = navigator.context.findRenderObject();
-    if (items.isEmpty || navigatorBox is! RenderBox) {
+    if (navigatorBox is! RenderBox) {
       return;
     }
     final point = navigatorBox.globalToLocal(request.globalPosition);
-    final selectionRect = request.selectionRect;
-    final route = CommonPopupRoute<void>(
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      placement: PopupPlacement.belowPoint,
-      modal: false,
-      anchorOf: () => point & Size.zero,
-      avoid: system.isDesktop || selectionRect == null
-          ? null
-          : Rect.fromPoints(
-              navigatorBox.globalToLocal(selectionRect.topLeft),
-              navigatorBox.globalToLocal(selectionRect.bottomRight),
-            ),
-      builder: (_) => CommonPopupMenu(items: items),
-    );
     final controller = widget.controller;
-    final selection = controller.selection;
+    late final PopupRoute<void> route;
+    late final ValueNotifier<List<PopupMenuItem>> items;
+    late final ValueNotifier<Rect> anchor;
+    var selection = controller.selection;
+    var selectingAll = false;
+
+    void close() {
+      if (route.isCurrent) navigator.pop();
+    }
+
+    Rect anchorRect() {
+      final rect = request.selectionRect;
+      return rect == null
+          ? point & Size.zero
+          : Rect.fromPoints(
+              navigatorBox.globalToLocal(rect.topLeft),
+              navigatorBox.globalToLocal(rect.bottomRight),
+            );
+    }
+
+    List<PopupMenuItem> menuItems() => [
+      if (request.hasSelection && !request.readOnly)
+        PopupMenuItem(
+          glyph: AppGlyphs.cut,
+          label: appLocalizations.cut,
+          onPressed: () {
+            request.cut();
+            close();
+          },
+        ),
+      if (request.hasSelection)
+        PopupMenuItem(
+          glyph: AppGlyphs.copy,
+          label: appLocalizations.copy,
+          onPressed: () {
+            request.copy();
+            close();
+          },
+        ),
+      if (!request.readOnly)
+        PopupMenuItem(
+          glyph: AppGlyphs.paste,
+          label: appLocalizations.paste,
+          onPressed: () {
+            request.paste();
+            close();
+          },
+        ),
+      if (!request.isAllSelected)
+        PopupMenuItem(
+          glyph: AppGlyphs.selectAll,
+          label: appLocalizations.selectAll,
+          onPressed: () {
+            selectingAll = true;
+            request.selectAll();
+            selectingAll = false;
+            selection = controller.selection;
+            if (!route.isCurrent) return;
+            items.value = menuItems();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (route.isActive) anchor.value = anchorRect();
+            });
+          },
+        ),
+    ];
+
+    items = ValueNotifier(menuItems());
+    if (items.value.isEmpty) {
+      return;
+    }
+    anchor = ValueNotifier(anchorRect());
+    route = system.isDesktop
+        ? AnchoredPopupRoute<void>(
+            barrierLabel: UiLocalizations.of(context).close,
+            placement: PopupPlacement.belowPoint,
+            modal: false,
+            anchorOf: () => point & Size.zero,
+            builder: (_) => PopupMenu(items: items.value),
+          )
+        : EditMenuRoute(
+            barrierLabel: UiLocalizations.of(context).close,
+            items: items,
+            selection: anchor,
+          );
     final version = controller.contentVersion;
     final composition = controller.imeComposition;
     final focusNode = controller.focusNode;
     final hadFocus = focusNode?.hasFocus ?? false;
     // Typing or a focus change reaches the editor with no pointer down.
     void closeOnceOutdated() {
+      if (selectingAll) return;
       final outdated =
           controller.selection != selection ||
           controller.contentVersion != version ||
           controller.imeComposition != composition ||
           hadFocus && !focusNode!.hasFocus;
-      if (outdated && route.isCurrent) navigator.pop();
+      if (outdated) close();
     }
 
     controller.addListener(closeOnceOutdated);
@@ -841,6 +886,12 @@ class _CodeEditorState extends ConsumerState<_CodeEditor> {
       controller.removeListener(closeOnceOutdated);
       focusNode?.removeListener(closeOnceOutdated);
     });
+    unawaited(
+      route.completed.whenComplete(() {
+        items.dispose();
+        anchor.dispose();
+      }),
+    );
   }
 
   @override
@@ -879,11 +930,8 @@ class _CodeEditorState extends ConsumerState<_CodeEditor> {
         ),
         child: EditorCompletionPopup(details: details, textStyle: _textStyle!),
       ),
-      magnifierBuilder: (context, controller, magnifierInfo) => TextLoupe(
-        controller: controller,
-        magnifierInfo: magnifierInfo,
-        borderColor: context.colorScheme.primary,
-      ),
+      magnifierBuilder: (context, controller, magnifierInfo) =>
+          TextLoupe(controller: controller, magnifierInfo: magnifierInfo),
       textStyle: _textStyle,
       lineWrap: lineWrap,
       lineNumberStyle: _lineNumberStyle,
@@ -1246,22 +1294,20 @@ class _FindOptionToggle extends StatelessWidget {
         tooltip: tooltip,
         isSelected: selected,
         onPressed: onPressed,
-        style: ElasticPress.buttonStyle
-            .merge(
-              IconButton.styleFrom(
-                backgroundColor: selected ? colorScheme.primary : null,
-                foregroundColor: selected
-                    ? colorScheme.onPrimary
-                    : colorScheme.onSurfaceVariant,
-                fixedSize: Size.square(TonalButtonSize.compact.button),
-                minimumSize: Size.square(TonalButtonSize.compact.button),
-                padding: EdgeInsets.zero,
-                iconSize: TonalButtonSize.compact.icon,
-                visualDensity: VisualDensity.standard,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            )
-            .merge(focusRingStyle(colorScheme, standsOff: selected)),
+        style: ButtonStyle.from(
+          backgroundColor: selected ? colorScheme.primary : null,
+          foregroundColor: selected
+              ? colorScheme.onPrimary
+              : colorScheme.onSurfaceVariant,
+          fixedSize: Size.square(TonalButtonSize.compact.button),
+          minimumSize: Size.square(TonalButtonSize.compact.button),
+          padding: EdgeInsets.zero,
+          iconSize: TonalButtonSize.compact.icon,
+          visualDensity: VisualDensity.standard,
+          tapTargetSize: TapTargetSize.shrinkWrap,
+          pressLook: PressLook.none,
+          ringStandsOff: selected,
+        ),
         icon: AnimatedGlyph(glyph: glyph, filled: selected),
       ),
     );
@@ -1292,10 +1338,11 @@ class _FindBarButton extends StatelessWidget {
           isSelected: selected,
           onPressed: onPressed,
           style: selected
-              ? IconButton.styleFrom(
+              ? ButtonStyle.from(
                   backgroundColor: colorScheme.primary,
                   foregroundColor: colorScheme.onPrimary,
-                ).merge(focusRingStyle(colorScheme, standsOff: true))
+                  ringStandsOff: true,
+                )
               : null,
           icon: GlyphIcon(glyph),
         ),

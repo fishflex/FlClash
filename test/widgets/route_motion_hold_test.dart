@@ -1,12 +1,13 @@
+import 'dart:async';
+
 import 'package:fl_clash/providers/app.dart';
-import 'package:fl_clash/ui/paged_sheet.dart';
-import 'package:fl_clash/ui/route_motion_hold.dart';
-import 'package:fl_clash/ui/sheet.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:prism_ui/prism_ui.dart';
 
 import '../helpers/test_app.dart';
+import '../helpers/host_scaffold.dart';
 
 class _Feed extends StatefulWidget {
   const _Feed({required this.source});
@@ -59,6 +60,26 @@ class _ArrivalState extends State<_Arrival> with RouteSettledMixin<_Arrival> {
   }
 }
 
+class _ArrivalList extends StatefulWidget {
+  const _ArrivalList();
+
+  @override
+  State<_ArrivalList> createState() => _ArrivalListState();
+}
+
+class _ArrivalListState extends State<_ArrivalList>
+    with ArrivalCacheExtentMixin<_ArrivalList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      scrollCacheExtent: arrivalCacheExtent,
+      itemExtent: 100,
+      itemCount: 50,
+      itemBuilder: (_, index) => Text('row $index'),
+    );
+  }
+}
+
 void main() {
   late ValueNotifier<int> source;
   late GlobalKey<NavigatorState> navigator;
@@ -72,9 +93,9 @@ void main() {
 
   Future<void> pumpFeed(WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      HostApp(
         navigatorKey: navigator,
-        home: Scaffold(body: _Feed(source: source)),
+        home: HostScaffold(body: _Feed(source: source)),
       ),
     );
   }
@@ -96,7 +117,7 @@ void main() {
     await pumpFeed(tester);
 
     navigator.currentState!.push(
-      MaterialPageRoute<void>(builder: (_) => const Scaffold()),
+      CardPageRoute<void>(builder: (_) => const HostScaffold()),
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
@@ -134,7 +155,7 @@ void main() {
       await tester.pumpWidget(
         TestApp(
           wrapInProviderScope: true,
-          child: Scaffold(
+          child: HostScaffold(
             body: Column(
               children: [
                 _Feed(source: source),
@@ -164,7 +185,7 @@ void main() {
     testWidgets('holds the page below while a sheet slides over it', (
       tester,
     ) async {
-      await pumpOpener(tester, const Scaffold(body: Text('sheet')));
+      await pumpOpener(tester, const HostScaffold(body: Text('sheet')));
 
       source.value = 1;
       await tester.pump();
@@ -182,7 +203,7 @@ void main() {
       await pumpOpener(
         tester,
         NestedPagedSheet(
-          builder: (_) => Scaffold(body: _Feed(source: inSheet)),
+          builder: (_) => HostScaffold(body: _Feed(source: inSheet)),
         ),
       );
 
@@ -195,10 +216,56 @@ void main() {
     });
   });
 
+  group('ArrivalCacheExtentMixin', () {
+    testWidgets('builds rows ahead only once nothing animates', (tester) async {
+      final spinner = AnimationController(
+        vsync: const TestVSync(),
+        duration: const Duration(seconds: 1),
+      );
+      addTearDown(spinner.dispose);
+      await tester.pumpWidget(
+        HostApp(navigatorKey: navigator, home: const HostScaffold()),
+      );
+      navigator.currentState!.push(
+        HostPageRoute<void>(
+          builder: (_) => const Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(height: 300, child: _ArrivalList()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final ahead = find.text('row 3', skipOffstage: false);
+      expect(ahead, findsOneWidget);
+
+      navigator.currentState!.pop();
+      await tester.pumpAndSettle();
+      navigator.currentState!.push(
+        HostPageRoute<void>(
+          builder: (_) => const Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(height: 300, child: _ArrivalList()),
+          ),
+        ),
+      );
+      unawaited(spinner.repeat());
+      await tester.pump();
+      for (var frame = 0; frame < 40; frame++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      expect(ahead, findsNothing);
+
+      spinner.stop();
+      await tester.pump();
+      await tester.pump();
+      expect(ahead, findsOneWidget);
+    });
+  });
+
   group('RouteSettledMixin', () {
     testWidgets('settles at once on a page that sits still', (tester) async {
       final settles = <String>[];
-      await tester.pumpWidget(MaterialApp(home: _Arrival(settles: settles)));
+      await tester.pumpWidget(HostApp(home: _Arrival(settles: settles)));
       await tester.pump();
 
       expect(settles, ['settled']);
@@ -210,11 +277,11 @@ void main() {
     ) async {
       final settles = <String>[];
       await tester.pumpWidget(
-        MaterialApp(navigatorKey: navigator, home: const Scaffold()),
+        HostApp(navigatorKey: navigator, home: const HostScaffold()),
       );
 
       navigator.currentState!.push(
-        MaterialPageRoute<void>(builder: (_) => _Arrival(settles: settles)),
+        HostPageRoute<void>(builder: (_) => _Arrival(settles: settles)),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
@@ -228,7 +295,7 @@ void main() {
       expect(find.text('settled'), findsOneWidget);
 
       navigator.currentState!.push(
-        MaterialPageRoute<void>(builder: (_) => const Scaffold()),
+        CardPageRoute<void>(builder: (_) => const HostScaffold()),
       );
       await tester.pumpAndSettle();
       navigator.currentState!.pop();

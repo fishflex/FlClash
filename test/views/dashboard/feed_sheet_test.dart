@@ -8,13 +8,14 @@ import 'package:fl_clash/views/dashboard/widgets/connection_stats.dart';
 import 'package:fl_clash/views/dns_queries.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/glyph_finders.dart';
 import '../../helpers/test_app.dart';
 import '../../helpers/test_profiles.dart';
+import '../../helpers/host_scaffold.dart';
 
 const _mobileSize = Size(400, 800);
 final _shortTop = _mobileSize.height * (1 - snapSheetDetents.first);
@@ -71,7 +72,7 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: TestApp(
-          child: Scaffold(
+          child: HostScaffold(
             body: ListView(children: const [ConnectionStatsCard()]),
           ),
         ),

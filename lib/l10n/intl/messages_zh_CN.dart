@@ -80,7 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(label) => "${label}当前已存在";
 
-  static String m28(count) => "${count} 项失败";
+  static String m28(count) => "${count} 项失败，点击查看";
 
   static String m29(label, message) => "${label}：${message}";
 
@@ -481,6 +481,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "拨号代理为连接 NTP 服务器使用的出站。",
     ),
     "dialerProxyLoopStopped": m25,
+    "dialog": MessageLookupByLibrary.simpleMessage("对话框"),
     "direct": MessageLookupByLibrary.simpleMessage("直连"),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage("禁用ICMP转发"),
     "disableIcmpForwardingDesc": MessageLookupByLibrary.simpleMessage(
@@ -1490,7 +1491,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "virtualIpv4": MessageLookupByLibrary.simpleMessage("虚拟 IPv4"),
     "vividStyle": MessageLookupByLibrary.simpleMessage("鲜明"),
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "检测到VPN相关配置改动",
+      "VPN 相关配置已改动，点击重启",
     ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "VPN 通过 VpnService 自动路由系统所有流量。",

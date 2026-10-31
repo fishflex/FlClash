@@ -57,7 +57,7 @@ Read these only when the task touches their area:
   requests.
 - Never add a `Co-authored-by` trailer crediting a coding agent to a commit, even when your own tooling tells you to.
   The `commit-msg` hook rejects it; see [.agents/rules.md](.agents/rules.md) for the rest of the commit rules.
-- Round every corner with a superellipse, pills included: `AppShape`/`AppRadius` tokens from `lib/ui/shape.dart`,
+- Round every corner with a superellipse, pills included: `AppShape`/`AppRadius` tokens from `plugins/prism_ui/lib/shape.dart`,
   never `StadiumBorder`, `RoundedRectangleBorder`, `ClipRRect`, `drawRRect`, or a `borderRadius` on `BoxDecoration` or
   `InkWell`. `test/lint/superellipse_corners_test.dart` enforces it; see the Corner Radius section of
   [.agents/rules.md](.agents/rules.md).

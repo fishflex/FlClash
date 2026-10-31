@@ -81,7 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(label) => "${label}이(가) 이미 있습니다";
 
-  static String m28(count) => "${count}개 항목 실패";
+  static String m28(count) => "${count}개 항목 실패. 눌러서 보기";
 
   static String m29(label, message) => "${label}: ${message}";
 
@@ -511,6 +511,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "다이얼러 프록시는 NTP 서버에 연결할 때 사용하는 아웃바운드입니다.",
     ),
     "dialerProxyLoopStopped": m25,
+    "dialog": MessageLookupByLibrary.simpleMessage("대화상자"),
     "direct": MessageLookupByLibrary.simpleMessage("직접"),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "ICMP 전달 사용 안 함",
@@ -1620,7 +1621,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "virtualIpv4": MessageLookupByLibrary.simpleMessage("가상 IPv4"),
     "vividStyle": MessageLookupByLibrary.simpleMessage("선명"),
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "VPN 관련 구성 변경이 감지되었습니다",
+      "VPN 관련 구성이 변경되었습니다. 눌러서 재시작",
     ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "VPN은 VpnService를 통해 모든 시스템 트래픽을 자동으로 라우팅합니다.",

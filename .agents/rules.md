@@ -38,41 +38,35 @@ the superellipse API at each layer:
   `BoxDecoration(borderRadius: ...)`; borders move to the shape's `side`, and a `Container` with
   `clipBehavior` still clips to the shape path.
 - Canvas: `canvas.drawRSuperellipse(RSuperellipse.fromRectAndRadius(...))` instead of `drawRRect`.
-- Ink: `InkWell.customBorder` with an `AppShape` instead of `InkWell.borderRadius`.
 
 Passing `BorderRadius.circular(x)` as the `borderRadius` argument of these APIs is expected — it only
 carries the corner magnitude; the rendered geometry stays a superellipse.
 
 Pills are no exception. `StadiumBorder` joins its round caps to the straight sides with a curvature jump, while
 `AppShape.full`, a superellipse at full radius, blends them, and on a square it renders the exact circle, so it serves
-circles too. Material 3 defaults every button, icon button, segmented button, and search bar to `StadiumBorder`;
-`ThemeData.withAppShapes` replaces that for the button themes, and a local `FilledButtonTheme` or `IconButtonTheme`
-replaces the app's, so merge the ambient `XButtonTheme.of(context).style` into it, as `CommonMinFilledButtonTheme`
-does. `CircleBorder` and `BoxShape.circle` are fine for something that is always square.
+circles too. The buttons of `plugins/prism_ui/lib/common_button.dart` default to `AppShape.full`, and `ButtonTheme.merge`
+keeps what the ambient theme sets. `CircleBorder` and `BoxShape.circle` are fine for something that is always square.
 
-APIs that accept only a `Radius`, such as `ScrollbarThemeData.radius`, keep circular corners; supply the superellipse
-with an enclosing clip or shape where it shows. Framework widgets that paint their own circular corners with no shape or
-decoration to override are left as Material draws them; switches are `CommonSwitch`, drawn by the app. Tooltips take
-theirs from `withAppShapes`, which sets `tooltipTheme.decoration`.
+APIs that accept only a `Radius` keep circular corners; supply the superellipse with an enclosing clip or shape where it
+shows.
 
 ### Typography
 
 Text sizes follow Apple's iOS Dynamic Type scale at its default size, on every platform. `AppTextStyle` in
-`lib/ui/typography.dart` holds its eleven styles, `largeTitle` to `caption2`, with Apple's leading and weights, plus two
+`plugins/prism_ui/lib/typography.dart` holds its eleven styles, `largeTitle` to `caption2`, with Apple's leading and weights, plus two
 steps the scale lacks: `display` for a dashboard figure and `pageTitle` for an app bar. Take one with
 `AppTextStyle.body.of(context)`, pass `emphasized: true` for the scale's emphasized weight (bold for the titles,
 semibold for the rest), and change color or family with `copyWith`; a weight is either regular or emphasized. Text
 sized to the shape it marks, such as a letter scaled to its icon, comes from `AppTextStyle.custom`. The dashboard's
-roles (`DashboardText` in `lib/views/dashboard/style.dart`) are built on the same types. `ThemeData.withAppTypography`
-maps Material's `TextTheme` slots onto the scale so Material components follow it; app code never reads those slots.
+roles (`DashboardText` in `lib/views/dashboard/style.dart`) are built on the same types.
 
 App bar titles sit at the leading edge in `pageTitle` on a root page and on any desktop page, at the leading edge in
 `headline` on a pushed page in the mobile view, and in the bar's centre in `headline` on a bottom sheet. A title widget,
 such as the editor's name field, stays at the leading edge. Past a back button a title keeps the bar's action inset
 clear of the button on either side.
 
-`test/lint/typography_test.dart` fails on `textTheme` anywhere in `lib/` but `typography.dart`, and on `fontSize:` or
-`fontWeight:` outside `lib/ui/`, except in the code editor, whose text follows the editor font-size setting.
+`test/lint/typography_test.dart` fails on `textTheme` anywhere in `lib/` or `prism_ui` but `typography.dart`, and on `fontSize:` or
+`fontWeight:` outside `plugins/prism_ui/`, except in the code editor, whose text follows the editor font-size setting.
 
 ### Text Field Suggestions
 
@@ -84,12 +78,22 @@ ask for a password keyboard; a link, key, rule or regex field that should not be
 alone. `test/lint/text_field_suggestions_test.dart` fails on `enableSuggestions: false` or
 `TextInputType.visiblePassword` anywhere else in `lib/`.
 
+### Text Selection Menu
+
+Selected text opens `TextSelectionMenu`, never the toolbar Flutter draws per platform; `TextField`, `TextFormField`,
+`SelectableText` and `SelectionArea` default to it (`plugins/prism_ui/lib/text_selection_menu.dart`). By touch that is
+`EditMenuRoute` (`plugins/prism_ui/lib/edit_menu.dart`), iOS 27's capsule of labels beside the selection, unfolding from
+a chevron into a card when they do not fit; by pointer it is a `PopupMenu`. The editor opens the same two. The menu
+keeps to cut, copy, paste, select and select all, and offers select all whenever some text is left unselected, which
+iOS drops. Handles, selection color, caret and `TextLoupe` follow the same measurements. Gestures stay each platform's
+own: a long press on Android selects a word.
+
 ### Length Units
 
 Flutter lengths are logical pixels, the unit Android calls dp. Comments, test names, docs and reports give them in dp,
 as in `48 dp`, never px: a reader takes px for physical pixels and misjudges the size by the device pixel ratio. Write
 "physical pixel" in full where the code really works in them, as the hairline snapping in
-`lib/ui/list_row_separator.dart` and the Win32 frame metrics in `plugins/window` do; raster image sizes in
+`plugins/prism_ui/lib/list_row_separator.dart` and the Win32 frame metrics in `plugins/window` do; raster image sizes in
 `tool/` and CSS under `site/` keep px. `test/lint/length_unit_test.dart` fails on a number followed by px in `lib/`
 and `test/`.
 
@@ -130,7 +134,7 @@ judgment, and it lives in the rules below and in review. Whether comments are to
   that contains them. This does not need approval.
 - These are not comments and are exempt from every rule here, including the density count: analyzer and linter
   directives (`// ignore:`, `// ignore_for_file:`, `// coverage:ignore`), license and copyright headers,
-  code-generation markers, and comments inside vendored upstream code such as `lib/ui/open_container.dart`.
+  code-generation markers, and comments inside vendored upstream code such as `plugins/prism_ui/lib/open_container.dart`.
 
 ### Density
 
@@ -502,11 +506,11 @@ behind `system.isMacOS` is unreachable from a macOS test host, so extract it —
 
 A tooltip needs an `Overlay` ancestor at build time, not at hover time: `RawTooltip` builds an `OverlayPortal`, so a
 button whose `tooltip` has nowhere to go throws "No Overlay widget found" and takes its whole subtree down with it.
-Everything `buildManagerStack` wraps around `MaterialApp.builder`'s child sits *above* the app Navigator and therefore
+Everything `buildManagerStack` wraps around `PrismApp.builder`'s child sits *above* the app Navigator and therefore
 above the only Overlay in the tree. A manager that renders a tooltip — `WindowHeaderLayout` and its caption buttons are
 the case that broke Windows while macOS, which renders a bare title there, stayed clean — hosts its own with
 `Overlay.wrap`, spanning the window so the tooltip is not clipped to the widget that owns it. A test only reproduces this
-by mirroring that topology: build the widget from `MaterialApp.builder`, never from `home:`.
+by mirroring that topology: build the widget from the app's `builder`, never from `home:`.
 
 A public top-level declaration that nothing outside its own file references is dead, and no lint catches it:
 `unused_element` covers only private ones, and a barrel `export` keeps a dead file compiling and off every
@@ -515,14 +519,14 @@ A public top-level declaration that nothing outside its own file references is d
 riverpod notifier is reached through its generated provider) and barrels as neither. Files publishing only extensions or
 typedefs are skipped: those are reached through the types they attach to, never by name.
 
-`CommonScaffold` runs its body under the system bar at the foot of the window, as Android's edge-to-edge guidance
+`Scaffold` runs its body under the system bar at the foot of the window, as Android's edge-to-edge guidance
 asks, and only the end of the content clears it. A three-button bar is no exception: `ThemeManager` leaves it
 Android's translucent scrim (`systemNavigationBarContrastEnforced`). Telling the two apart by the side back-swipe
 zones Flutter reports reserved a gesture handle again on a real phone, so no page asks which bar it has. A scroll view
 ends, and anything fixed at the foot of a body stands, `context.bottomInset` above the edge: `BottomInsetScope` (the
 home dock, a docked search) plus the system bar `MediaQuery` still carries. The home shell takes the system bar out of
 `MediaQuery` for its tabs because the dock's inset already counts it. A bare `BottomInsetScope.of` leaves the system
-bar out, so code outside `lib/ui` never reads it. The scaffold adds its docked search to the scope around its body, so a page with a `searchState` reads
+bar out, so code outside `prism_ui` never reads it. The scaffold adds its docked search to the scope around its body, so a page with a `searchState` reads
 `context.bottomInset` below the scaffold, inside `body: Builder(builder: (context) => ...)`; read with the context the
 scaffold is built from, it leaves the end of the content under the search field.
 `test/lint/scaffold_bottom_inset_test.dart` enforces both by scanning `lib/`.
@@ -650,7 +654,7 @@ Do not manually edit generated files under:
 - `lib/models/generated/`
 - `lib/providers/generated/`
 - `lib/database/generated/`
-- `lib/ui/generated/`
+- `plugins/prism_ui/lib/generated/`
 - `lib/l10n/intl/`
 
 After schema, model, or provider changes, run build generation and include focused tests when behavior changes.
@@ -658,11 +662,12 @@ After schema, model, or provider changes, run build generation and include focus
 `lib/l10n/l10n.dart` is the one file that still imports `package:flutter/material.dart`.
 `intl_utils` hardcodes that import in its own template, so regenerating rewrites it and
 there is nothing to fix here; `test/lint/design_package_test.dart` exempts the generated
-l10n paths for that reason. It is harmless because the file only needs `Locale`,
-`BuildContext`, `Localizations` and `LocalizationsDelegate`, which the legacy library and
-`material_ui` both re-export from the same `package:flutter/widgets.dart`. Everything a
-human writes takes Material from `material_ui`; `cupertino_ui` is banned outright and
-survives only as a transitive dependency of `material_ui`.
+l10n paths for that reason. It only needs what `package:flutter/widgets.dart` exports.
+
+The project has no design library: `material_ui`, `cupertino_ui` and the SDK's
+`material.dart` and `cupertino.dart` are banned by the same test, and the lock file holds
+neither package. Widgets come from `package:flutter/widgets.dart` and components, the
+`ThemeData` and the `ColorScheme` from `prism_ui`.
 
 Strings live in `arb/intl_{en,zh_CN,ja,ru,fr,es,ko}.arb` — flat JSON, no `@` metadata. Add a key to all seven, then regenerate with
 `dart run intl_utils:generate`, which rewrites `lib/l10n/`. A key present in only some locales silently falls back to

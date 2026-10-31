@@ -270,8 +270,10 @@ Future<VpnOptions> vpnOptions(Ref ref) async {
 @riverpod
 class AccessControlState extends _$AccessControlState
     with AutoDisposeNotifierMixin {
+  /// A draft of the saved props, which the access page edits until it saves.
   @override
-  AccessControlProps build() => const AccessControlProps();
+  AccessControlProps build() =>
+      ref.read(vpnSettingProvider.select((state) => state.accessControlProps));
 }
 
 @riverpod

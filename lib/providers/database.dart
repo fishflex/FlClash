@@ -5,6 +5,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/ui/banner.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/database.g.dart';
@@ -52,9 +53,9 @@ void _reportOptimisticFailure(Object error, StackTrace stackTrace) {
     'Optimistic database write failed: ${compactError(error)}, $stackTrace',
     logLevel: LogLevel.warning,
   );
-  dialogs.showNotifier(
+  dialogs.showBanner(
     currentAppLocalizations.databaseWriteFailedTip,
-    level: MessageLevel.error,
+    level: BannerLevel.error,
   );
 }
 

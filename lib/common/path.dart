@@ -128,8 +128,11 @@ class AppPath {
   }
 
   Future<String> getScriptPath(String fileName) async {
-    final path = await scriptsDirPath;
-    return join(path, '$fileName.js');
+    return scriptPathIn(await scriptsDirPath, fileName);
+  }
+
+  static String scriptPathIn(String scriptsDir, String fileName) {
+    return join(scriptsDir, '$fileName.js');
   }
 
   Future<String> get providerCacheRootPath async {
@@ -137,12 +140,12 @@ class AppPath {
     return join(directory, providersDirectoryName);
   }
 
+  Future<String> get ruleProviderCacheDirPath async {
+    return join(await providerCacheRootPath, rulesProviderDirectoryName);
+  }
+
   Future<String> getProviderCachePath(String fileName) async {
-    return join(
-      await providerCacheRootPath,
-      rulesProviderDirectoryName,
-      fileName,
-    );
+    return join(await ruleProviderCacheDirPath, fileName);
   }
 
   Future<String> getProvidersRootPath() async {

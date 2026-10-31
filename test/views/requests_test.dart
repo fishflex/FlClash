@@ -3,15 +3,18 @@ import 'package:fl_clash/features/features.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
-import 'package:fl_clash/ui/chip.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
-import 'package:fl_clash/ui/null_status.dart';
-import 'package:fl_clash/ui/scroll.dart';
 import 'package:fl_clash/views/connection/requests.dart';
 import 'package:flutter/gestures.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart'
+    show Divider, FloatingActionButton;
+import 'package:prism_ui/chip.dart';
+import 'package:prism_ui/null_status.dart';
+import 'package:prism_ui/scaffold.dart';
+import 'package:prism_ui/scroll.dart';
 
 import '../helpers/scrollbar.dart';
 import '../helpers/test_app.dart';

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/common/window.dart';
 import 'package:fl_clash/bootstrap.dart';
+import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/system_dns.dart';
+import 'package:fl_clash/common/window.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/hotkey_manager.dart';
@@ -14,7 +14,8 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/ui.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -48,7 +49,7 @@ Widget buildManagerStack({
       : AndroidManager(child: TileManager(child: state));
   return AppEnvManager(
     child: LocaleManager(
-      child: StatusManager(child: ThemeManager(child: platformState)),
+      child: ThemeManager(child: StatusManager(child: platformState)),
     ),
   );
 }
@@ -155,14 +156,14 @@ class ApplicationState extends ConsumerState<Application> {
           appSettingProvider.select((state) => state.locale),
         );
         final themeProps = ref.watch(themeSettingProvider);
-        return MaterialApp(
+        return PrismApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: globalState.navigatorKey,
           onNavigationNotification: (_) => true,
           localizationsDelegates: const [
             AppLocalizations.delegate,
             AppUiLocalizations.delegate,
-            ...GlobalMaterialLocalizations.delegates,
+            GlobalWidgetsLocalizations.delegate,
           ],
           builder: (context, child) {
             return ThemeCrossFade(
@@ -173,20 +174,21 @@ class ApplicationState extends ConsumerState<Application> {
                 child: RemoteFocusAdapter(
                   enabled: system.isTV,
                   floatingKeyboard: app?.floatingKeyboard,
-                  child: child!,
+                  child: Overlay.wrap(child: child!),
                 ),
               ),
             );
           },
-          scrollBehavior: const BaseScrollBehavior(),
           title: appName,
           locale: getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
           themeMode: themeProps.themeMode,
           theme: watchAppTheme(ref, Brightness.light),
           darkTheme: watchAppTheme(ref, Brightness.dark),
-          themeAnimationStyle: AnimationStyle.noAnimation,
-          home: KeyboardInsetHold(child: child!),
+          onGenerateRoute: (settings) => HomeRoute(
+            settings: settings,
+            builder: (_) => KeyboardInsetHold(child: child!),
+          ),
         );
       },
       child: const HomePage(),

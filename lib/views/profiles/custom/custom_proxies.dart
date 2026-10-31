@@ -10,7 +10,7 @@ import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'quick_edit.dart';
@@ -395,23 +395,27 @@ class _CustomProxiesViewState extends ConsumerState<CustomProxiesView> {
     required ItemPosition position,
     int? dragIndex,
   }) {
-    final item = ItemPositionProvider(
-      position: position,
-      child: _NodeItem(
-        proxy: proxy,
-        isEditing: selected.isNotEmpty,
-        isSelected: selected.contains(proxy.id),
-        onSelected: () => _handleToggleSelected(proxy.id),
-        onPressed: () => _handleAddOrUpdate(proxy: proxy),
-      ),
-    );
-    if (dragIndex == null) {
-      return KeyedSubtree(key: ValueKey(proxy.id), child: item);
-    }
-    return ReorderableDelayedDragStartListener(
+    final isEditing = selected.isNotEmpty;
+    final isSelected = selected.contains(proxy.id);
+    return MemoBuilder(
       key: ValueKey(proxy.id),
-      index: dragIndex,
-      child: item,
+      inputs: [proxy, position, dragIndex, isEditing, isSelected],
+      builder: (_) {
+        final item = ItemPositionProvider(
+          position: position,
+          child: _NodeItem(
+            proxy: proxy,
+            isEditing: isEditing,
+            isSelected: isSelected,
+            onSelected: () => _handleToggleSelected(proxy.id),
+            onPressed: () => _handleAddOrUpdate(proxy: proxy),
+          ),
+        );
+        if (dragIndex == null) {
+          return item;
+        }
+        return ReorderDragStartListener(index: dragIndex, child: item);
+      },
     );
   }
 
@@ -434,7 +438,7 @@ class _CustomProxiesViewState extends ConsumerState<CustomProxiesView> {
     });
     final visibleIds = {for (final proxy in visible) proxy.id};
     final visibleSelected = selected.intersection(visibleIds);
-    return CommonPopScope(
+    return PopGuard(
       onPop: selected.isEmpty
           ? null
           : (_) {
@@ -443,7 +447,7 @@ class _CustomProxiesViewState extends ConsumerState<CustomProxiesView> {
               });
               return false;
             },
-      child: CommonScaffold(
+      child: Scaffold(
         title: appLocalizations.proxies,
         searchState: AppBarSearchState(onSearch: _handleSearch),
         actions: [
@@ -500,7 +504,7 @@ class _CustomProxiesViewState extends ConsumerState<CustomProxiesView> {
                     16 + context.bottomInset,
                   ),
                   sliver: reorderable
-                      ? SliverReorderableList(
+                      ? SliverPrismReorderableList(
                           itemCount: visible.length,
                           itemBuilder: (_, index) => _buildNode(
                             visible[index],
@@ -524,7 +528,7 @@ class _CustomProxiesViewState extends ConsumerState<CustomProxiesView> {
                               ),
                           onReorderItem: _handleReorder,
                         )
-                      : SliverList.builder(
+                      : SliverPrismList(
                           itemCount: visible.length,
                           itemBuilder: (_, index) => _buildNode(
                             visible[index],
@@ -581,7 +585,7 @@ class _NodeItem extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (issues.isNotEmpty) CustomIssueButton(issues: issues),
-          CommonCheckBox(
+          Checkbox(
             value: isSelected,
             isCircle: true,
             onChanged: (_) => onSelected(),
@@ -692,7 +696,7 @@ class _ShareLinkDialogState extends State<_ShareLinkDialog> {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return CommonDialog(
+    return AlertDialog(
       title: appLocalizations.quickEdit,
       hasFields: true,
       actions: [
@@ -702,6 +706,7 @@ class _ShareLinkDialogState extends State<_ShareLinkDialog> {
         ),
       ],
       child: TextField(
+        contextMenuBuilder: TextSelectionMenu.editableText,
         controller: _controller,
         autofocus: true,
         minLines: 3,
@@ -1068,7 +1073,7 @@ class _EditCustomProxyViewState extends ConsumerState<_EditCustomProxyView> {
       obscureText: !revealed,
       leading: leading,
       onChanged: onChanged,
-      suffix: CommonMinIconButtonTheme(
+      suffix: MinIconButtonTheme(
         child: IconButton(
           tooltip: revealed
               ? appLocalizations.hidePassword
@@ -1094,7 +1099,7 @@ class _EditCustomProxyViewState extends ConsumerState<_EditCustomProxyView> {
       title: title,
       leading: leading,
       onPressed: () => onChanged(!value),
-      trailing: CommonSwitch(value: value, onChanged: onChanged),
+      trailing: Switch(value: value, onChanged: onChanged),
     );
   }
 
@@ -1483,7 +1488,7 @@ class _EditCustomProxyViewState extends ConsumerState<_EditCustomProxyView> {
     );
     final easyTier = proxy.type == 'easytier';
     final fields = proxy.fields;
-    return CommonScaffold(
+    return Scaffold(
       iconActions: [
         customQuickEditAction(context, onPressed: _handleQuickEdit),
       ],

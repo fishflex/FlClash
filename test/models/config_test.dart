@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
-import 'package:fl_clash/ui/color.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:prism_ui/prism_ui.dart';
 import 'package:test/test.dart';
 
 T roundTrip<T>(

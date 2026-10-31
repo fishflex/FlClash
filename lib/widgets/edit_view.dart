@@ -154,7 +154,7 @@ abstract class EditViewState<W extends ConsumerStatefulWidget, T>
     final selected = ref.watch(itemsProvider(_selectionKey));
     final isEditing = selected.isNotEmpty;
     final hasChanges = !sameEntries(_entries, _initialEntries);
-    return CommonPopScope(
+    return PopGuard(
       onPop: isEditing
           ? (_) {
               ref.read(itemsProvider(_selectionKey).notifier).value = {};
@@ -166,7 +166,7 @@ abstract class EditViewState<W extends ConsumerStatefulWidget, T>
               return false;
             }
           : null,
-      child: CommonScaffold(
+      child: Scaffold(
         title: title,
         confirmationAction: !isEditing && hasChanges
             ? IconButtonData(
@@ -206,7 +206,10 @@ abstract class EditViewState<W extends ConsumerStatefulWidget, T>
         ],
         body: NullStatusSwitcher(
           isEmpty: _entries.isEmpty,
-          nullStatus: NullStatus(label: appLocalizations.noData),
+          nullStatus: NullStatus(
+            label: appLocalizations.noData,
+            illustration: NullStatusIllustration.data,
+          ),
           child: ReorderableListView.builder(
             padding: EdgeInsets.only(
               bottom: 16 + context.bottomInset,

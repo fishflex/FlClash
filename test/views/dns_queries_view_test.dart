@@ -9,7 +9,7 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/dns_queries.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -81,7 +81,6 @@ void main() {
   Future<void> pumpDnsQueries(
     WidgetTester tester, {
     Size size = _tableSize,
-    bool withStatusManager = false,
   }) async {
     container.read(viewSizeProvider.notifier).update((_) => size);
     tester.view.physicalSize = size;
@@ -92,10 +91,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: TestApp(
-          withStatusManager: withStatusManager,
-          child: const DnsQueriesView(),
-        ),
+        child: const TestApp(child: DnsQueriesView()),
       ),
     );
     await tester.pump();
@@ -383,7 +379,7 @@ void main() {
 
   testWidgets('the broom clears the DNS cache and says so', (tester) async {
     when(core.clearDnsCache).thenAnswer((_) async => true);
-    await pumpDnsQueries(tester, withStatusManager: true);
+    await pumpDnsQueries(tester);
 
     await tester.tap(find.byGlyph(AppGlyphs.broom));
     await tester.pumpAndSettle();
@@ -403,7 +399,7 @@ void main() {
         message: 'Core is not running',
       ),
     );
-    await pumpDnsQueries(tester, withStatusManager: true);
+    await pumpDnsQueries(tester);
 
     await tester.tap(find.byGlyph(AppGlyphs.broom));
     await tester.pumpAndSettle();

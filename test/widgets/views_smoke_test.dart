@@ -1,5 +1,5 @@
-import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
@@ -7,20 +7,18 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/state.dart';
-import 'package:fl_clash/ui/paged_sheet.dart';
-import 'package:fl_clash/ui/popup.dart';
 import 'package:fl_clash/views/config/advanced.dart';
 import 'package:fl_clash/views/config/custom_resources.dart';
 import 'package:fl_clash/views/config/dns.dart';
-import 'package:fl_clash/views/config/ntp.dart';
-import 'package:fl_clash/views/config/sniffer.dart';
-import 'package:fl_clash/views/config/tun.dart';
+import 'package:fl_clash/views/config/filters.dart';
 import 'package:fl_clash/views/config/general.dart';
 import 'package:fl_clash/views/config/network.dart';
+import 'package:fl_clash/views/config/ntp.dart';
 import 'package:fl_clash/views/config/on_demand.dart';
-import 'package:fl_clash/views/config/filters.dart';
 import 'package:fl_clash/views/config/rules.dart';
 import 'package:fl_clash/views/config/scripts.dart';
+import 'package:fl_clash/views/config/sniffer.dart';
+import 'package:fl_clash/views/config/tun.dart';
 import 'package:fl_clash/views/config/user_agents.dart';
 import 'package:fl_clash/views/hotkey.dart';
 import 'package:fl_clash/views/profiles/custom/custom.dart';
@@ -30,13 +28,15 @@ import 'package:fl_clash/views/proxies/list.dart';
 import 'package:fl_clash/views/proxies/tab.dart';
 import 'package:fl_clash/views/theme.dart';
 import 'package:fl_clash/views/views.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/test_app.dart';
 import '../helpers/test_database_providers.dart';
 import '../helpers/test_profiles.dart';
+import '../helpers/host_scaffold.dart';
+import 'package:prism_ui/prism_ui.dart';
 
 Finder _portField(String label) => find.descendant(
   of: find.widgetWithText(FormRow, label),
@@ -58,7 +58,7 @@ void main() {
     'ntp config': NtpView(1),
     'sniffer config': SnifferView(1),
     'tun config': TunView(1),
-    'network config': const Scaffold(body: NetworkListView()),
+    'network config': const HostScaffold(body: NetworkListView()),
     'advanced config': const AdvancedConfigView(),
     'custom profile resources': const CustomResourcesView(),
     'on demand config': const OnDemandView(),
@@ -183,7 +183,7 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: TestApp(
-          child: Scaffold(body: ListView(children: const [UaItem()])),
+          child: HostScaffold(body: ListView(children: const [UaItem()])),
         ),
       ),
     );
@@ -223,7 +223,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const TestApp(child: Scaffold(body: PortItem())),
+        child: const TestApp(child: HostScaffold(body: PortItem())),
       ),
     );
     await tester.pump();
@@ -413,10 +413,10 @@ void main() {
       }
 
       if (view is CustomRulesView) {
-        final list = tester.widget<ReorderableListView>(
-          find.byType(ReorderableListView),
+        final list = tester.widget<PrismReorderableListView>(
+          find.byType(PrismReorderableListView),
         );
-        list.onReorderItem!(0, 1);
+        list.onReorderItem(0, 1);
         await tester.pump();
 
         await tester.tap(find.byType(Checkbox).first);
@@ -434,7 +434,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(
           find.descendant(
-            of: find.byType(CommonPopupMenu),
+            of: find.byType(PopupMenu),
             matching: find.text('Add'),
           ),
         );
@@ -449,8 +449,8 @@ void main() {
 
       if (view is CustomProfileView) {
         await tester.pumpAndSettle();
-        final list = tester.widget<SliverReorderableList>(
-          find.byType(SliverReorderableList),
+        final list = tester.widget<SliverPrismReorderableList>(
+          find.byType(SliverPrismReorderableList),
         );
         list.onReorderItem!(0, 1);
         await tester.pump();

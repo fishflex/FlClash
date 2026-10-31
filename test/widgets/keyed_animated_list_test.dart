@@ -1,11 +1,13 @@
-import 'package:fl_clash/ui/keyed_animated_list.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:prism_ui/prism_ui.dart';
+import '../helpers/host_scaffold.dart';
+import '../helpers/test_app.dart';
 
 void main() {
   Widget buildList(List<String> items) {
-    return MaterialApp(
-      home: Scaffold(
+    return HostApp(
+      home: HostScaffold(
         body: KeyedAnimatedList<String>(
           items: items,
           keyOf: (item) => item,
@@ -89,6 +91,7 @@ void main() {
   ) async {
     final visible = [for (var i = 0; i < 30; i++) '$i'];
     await tester.pumpWidget(buildList(visible));
+    await tester.pumpAndSettle();
     await tester.pumpWidget(
       buildList([...visible, for (var i = 30; i < 70; i++) '$i']),
     );

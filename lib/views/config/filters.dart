@@ -3,7 +3,8 @@ import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FiltersView extends ConsumerStatefulWidget {
@@ -123,7 +124,7 @@ class _FilterItem extends StatelessWidget {
         text: Text(filter.label, maxLines: 1, overflow: TextOverflow.ellipsis),
       ),
       subtitle: FilterRegexText(filter.regex),
-      trailing: CommonCheckBox(
+      trailing: Checkbox(
         value: isSelected,
         isCircle: true,
         onChanged: (_) => onSelected(),

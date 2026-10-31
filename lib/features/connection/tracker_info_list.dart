@@ -1,7 +1,7 @@
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/widgets/widgets.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 import 'tracker_info_item.dart';
@@ -80,15 +80,26 @@ class TrackerInfoList extends StatelessWidget {
       separatorBuilder: (_, _) => table == null
           ? const SizedBox(height: recordListGap)
           : const SizedBox.shrink(),
-      itemBuilder: (_, index) => _buildTrackerInfoItem(
-        context,
-        trackerInfos[index],
-        isLive: false,
-        detailTitle: detailTitle,
-        table: table,
-        striped: index.isOdd,
-        actionBuilder: actionBuilder,
-      ),
+      itemBuilder: (_, index) {
+        final trackerInfo = trackerInfos[index];
+        final striped = index.isOdd;
+        return MemoBuilder(
+          key: Key(trackerInfo.id),
+          inputs: [
+            trackerInfo,
+            ...table == null ? [detailTitle] : [table, striped],
+          ],
+          builder: (_) => _buildTrackerInfoItem(
+            context,
+            trackerInfo,
+            isLive: false,
+            detailTitle: detailTitle,
+            table: table,
+            striped: striped,
+            actionBuilder: actionBuilder,
+          ),
+        );
+      },
     );
   }
 }
@@ -128,15 +139,34 @@ class TrackerInfoAnimatedList extends StatelessWidget {
       items: trackerInfos,
       keyOf: (trackerInfo) => trackerInfo.id,
       separator: table == null ? const SizedBox(height: recordListGap) : null,
-      itemBuilder: (context, trackerInfo) => _buildTrackerInfoItem(
-        context,
-        trackerInfo,
-        isLive: true,
-        detailTitle: detailTitle,
-        table: table,
-        striped: positions[trackerInfo.id]?.isOdd ?? false,
-        actionBuilder: actionBuilder,
-      ),
+      itemBuilder: (itemContext, trackerInfo) {
+        final striped = positions[trackerInfo.id]?.isOdd ?? false;
+        return MemoBuilder(
+          key: Key(trackerInfo.id),
+          // A live row reads its age off the clock, which moves on its own.
+          inputs: [
+            trackerInfo,
+            ...table == null
+                ? [
+                    detailTitle,
+                    trackerInfo.start.getLastUpdateTimeDesc(
+                      itemContext,
+                      compact: true,
+                    ),
+                  ]
+                : [table, striped],
+          ],
+          builder: (_) => _buildTrackerInfoItem(
+            context,
+            trackerInfo,
+            isLive: true,
+            detailTitle: detailTitle,
+            table: table,
+            striped: striped,
+            actionBuilder: actionBuilder,
+          ),
+        );
+      },
     );
   }
 }

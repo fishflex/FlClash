@@ -198,9 +198,9 @@ class ProxiesAction extends _$ProxiesAction {
         logLevel: coreFailureLogLevel(error),
       );
       profilesAction.updateCurrentSelectedMap(groupName, rollbackName);
-      dialogs.showNotifier(
+      dialogs.showBanner(
         currentAppLocalizations.changeProxyFailedTip,
-        level: MessageLevel.error,
+        level: BannerLevel.error,
       );
       return;
     }
@@ -296,7 +296,7 @@ class ProxiesAction extends _$ProxiesAction {
       groupNames: groupNames.toSet(),
     );
     if (added == null) {
-      dialogs.showNotifier(appLocalizations.alreadyInLocalProxies(name));
+      dialogs.showBanner(appLocalizations.alreadyInLocalProxies(name));
       return;
     }
     final order = indexing.generateKeyBetween(
@@ -306,7 +306,7 @@ class ProxiesAction extends _$ProxiesAction {
     await database.customProxies.put(
       CustomProxy.fromDefinition(added).copyWith(order: order).toCompanion(),
     );
-    dialogs.showNotifier(appLocalizations.addedToLocalProxies(name));
+    dialogs.showBanner(appLocalizations.addedToLocalProxies(name));
   }
 
   Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) {

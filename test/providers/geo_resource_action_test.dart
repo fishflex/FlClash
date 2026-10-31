@@ -3,20 +3,19 @@ import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/core/interface.dart';
 import 'package:fl_clash/core/method.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/l10n/l10n.dart';
-import 'package:fl_clash/manager/status_manager.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/core.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/glyph_finders.dart';
+import '../helpers/test_app.dart';
 
 class _MockCoreHandlerInterface extends Mock implements CoreHandlerInterface {}
 
@@ -35,13 +34,11 @@ Future<ProviderContainer> _pumpGeoResourceAction(
   await tester.pumpWidget(
     UncontrolledProviderScope(
       container: container,
-      child: MaterialApp(
+      child: HostApp(
         navigatorKey: globalState.navigatorKey,
-        localizationsDelegates: const [AppLocalizations.delegate],
-        supportedLocales: AppLocalizations.delegate.supportedLocales,
         builder: (context, child) {
           globalState.measure = Measure.of(context, 1);
-          return StatusManager(child: child!);
+          return BannerHost(stacked: false, topInset: 0, child: child!);
         },
         home: const SizedBox(),
       ),
@@ -254,7 +251,16 @@ void main() {
     await tester.pump();
 
     expect(find.text('download failed'), findsOneWidget);
-    expect(find.byGlyph(AppGlyphs.error), findsOneWidget);
+    final banner = find
+        .ancestor(
+          of: find.text('download failed'),
+          matching: find.byType(Surface),
+        )
+        .first;
+    expect(
+      tester.widget<Surface>(banner).color,
+      Theme.of(tester.element(banner)).colorScheme.errorContainer,
+    );
 
     await tester.pumpWidget(const SizedBox.shrink());
   });

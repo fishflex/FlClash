@@ -1,6 +1,6 @@
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/ui/color.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
+import 'package:prism_ui/color.dart';
 
 import 'app_localizations.dart';
 

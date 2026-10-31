@@ -5,13 +5,13 @@ import 'package:fl_clash/common/service_probe.dart'
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/core/interface.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/ip_quality.dart';
 import 'package:fl_clash/providers/outbound_ip.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/providers/routed_probe.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/dashboard/layout.dart';
 import 'package:fl_clash/views/dashboard/widgets/card.dart';
 import 'package:fl_clash/views/dashboard/widgets/current_outbound.dart';
@@ -20,13 +20,15 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/glyph_finders.dart';
 import '../../helpers/test_app.dart';
+import 'package:prism_ui/prism_ui.dart';
+import '../../helpers/host_scaffold.dart';
 
 const _ip = '203.0.113.9';
 
@@ -77,7 +79,7 @@ OutboundIpResult _address({int coreEpoch = 1}) => OutboundIpResult(
 );
 
 Widget _card({DashboardDensity density = DashboardDensity.standard}) =>
-    Scaffold(
+    HostScaffold(
       body: Align(
         alignment: Alignment.topLeft,
         child: SizedBox(
@@ -149,9 +151,7 @@ void _useTallView(WidgetTester tester) {
 
 Finder _clover() => find.ancestor(
   of: find.byType(ShapeBadge),
-  matching: find.byWidgetPredicate(
-    (widget) => widget is InkResponse && widget.runtimeType == InkResponse,
-  ),
+  matching: find.byWidgetPredicate((widget) => widget is PressRegion),
 );
 
 double _cloverTurn(WidgetTester tester) => tester
@@ -241,7 +241,7 @@ void main() {
 
       expect(find.byType(SkeletonPill), findsNWidgets(3));
       expect(find.byType(SkeletonText), findsOneWidget);
-      expect(tester.widget<InkResponse>(_clover()).onTap, isNull);
+      expect(tester.widget<PressRegion>(_clover()).onTap, isNull);
       final turn = _cloverTurn(tester);
       await tester.pump(const Duration(milliseconds: 300));
       expect(_cloverTurn(tester), isNot(turn));
@@ -252,7 +252,7 @@ void main() {
       expect(find.byType(SkeletonPill), findsNothing);
       expect(find.text('Residential'), findsOneWidget);
       expect(_cloverTurn(tester) % (math.pi / 2), closeTo(0, 1e-9));
-      expect(tester.widget<InkResponse>(_clover()).onTap, isNotNull);
+      expect(tester.widget<PressRegion>(_clover()).onTap, isNotNull);
     });
 
     testWidgets('checks a failed quality again from its clover', (
@@ -518,9 +518,8 @@ void main() {
       await tester.pump();
     }
 
-    Finder startButton() => find
-        .byWidgetPredicate((widget) => widget.runtimeType == InkResponse)
-        .last;
+    Finder startButton() =>
+        find.byWidgetPredicate((widget) => widget is PressRegion).last;
 
     testWidgets('dispatches each toggle through the shared running state', (
       tester,
@@ -582,10 +581,7 @@ void main() {
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
-      expect(
-        tester.renderObject<RenderProxyBox>(press).child!.debugLayer,
-        isA<TransformLayer>(),
-      );
+      expect(tester.renderObject(press).debugLayer, isA<TransformLayer>());
       await gesture.cancel();
       await tester.pumpAndSettle();
     });
@@ -594,7 +590,7 @@ void main() {
       container = containerWith(profiles: const []);
       await pumpCard(tester, density: DashboardDensity.mobile);
 
-      final toggle = tester.widget<InkResponse>(startButton());
+      final toggle = tester.widget<PressRegion>(startButton());
       expect(toggle.onTap, isNull);
       expect(tester.takeException(), isNull);
     });

@@ -91,7 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m27(label) => "«${label}» уже существует";
 
-  static String m28(count) => "Ошибок: ${count}";
+  static String m28(count) => "Ошибок: ${count}. Нажмите, чтобы посмотреть";
 
   static String m29(label, message) => "${label}: ${message}";
 
@@ -636,6 +636,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Прокси для подключения — исход, через который идёт обращение к NTP-серверу.",
     ),
     "dialerProxyLoopStopped": m25,
+    "dialog": MessageLookupByLibrary.simpleMessage("Диалог"),
     "direct": MessageLookupByLibrary.simpleMessage("Прямой"),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "Отключить пересылку ICMP",
@@ -2004,7 +2005,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "virtualIpv4": MessageLookupByLibrary.simpleMessage("Виртуальный IPv4"),
     "vividStyle": MessageLookupByLibrary.simpleMessage("Яркий"),
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "Обнаружено изменение настроек VPN",
+      "Настройки VPN изменены. Нажмите, чтобы перезапустить",
     ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "VPN автоматически направляет весь системный трафик через VpnService.",

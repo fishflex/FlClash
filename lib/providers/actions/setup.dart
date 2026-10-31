@@ -623,7 +623,7 @@ class SetupAction extends _$SetupAction {
         null => res.yaml,
       };
     } catch (e) {
-      dialogs.showNotifier(e.toString(), level: MessageLevel.error);
+      dialogs.showBanner(e.toString(), level: BannerLevel.error);
     }
     return '';
   }
@@ -682,9 +682,9 @@ class SetupAction extends _$SetupAction {
         ref
             .read(patchClashConfigProvider.notifier)
             .update((state) => state.copyWith.tun(enable: false));
-        dialogs.showNotifier(
+        dialogs.showBanner(
           currentAppLocalizations.tunAuthorizationFailed,
-          level: MessageLevel.error,
+          level: BannerLevel.error,
         );
         return true;
     }

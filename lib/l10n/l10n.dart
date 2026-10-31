@@ -3186,6 +3186,11 @@ class AppLocalizations {
     );
   }
 
+  /// `Dialog`
+  String get dialog {
+    return Intl.message('Dialog', name: 'dialog', desc: '', args: []);
+  }
+
   /// `Cancel`
   String get cancel {
     return Intl.message('Cancel', name: 'cancel', desc: '', args: []);
@@ -4486,10 +4491,10 @@ class AppLocalizations {
     return Intl.message('Turn off', name: 'turnOff', desc: '', args: []);
   }
 
-  /// `VPN-related configuration change detected`
+  /// `VPN settings changed. Tap to restart`
   String get vpnConfigChangeDetected {
     return Intl.message(
-      'VPN-related configuration change detected',
+      'VPN settings changed. Tap to restart',
       name: 'vpnConfigChangeDetected',
       desc: '',
       args: [],
@@ -7263,10 +7268,10 @@ class AppLocalizations {
     );
   }
 
-  /// `{count} items failed`
+  /// `{count} items failed. Tap to view`
   String failedCount(Object count) {
     return Intl.message(
-      '$count items failed',
+      '$count items failed. Tap to view',
       name: 'failedCount',
       desc: '',
       args: [count],

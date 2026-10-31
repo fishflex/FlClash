@@ -4,7 +4,9 @@ import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/ui/ui.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart'
+    show InputDecoration, ReorderableListView, TextField, TextFormField;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 part 'edit_view.dart';
@@ -138,6 +140,7 @@ class _EntryDialogState<T> extends State<EntryDialog<T>> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       key: _formKey,
       child: TextFormField(
+        contextMenuBuilder: TextSelectionMenu.editableText,
         maxLines: null,
         minLines: 1,
         inputFormatters: widget.valueMaxLength == null
@@ -169,7 +172,7 @@ class _EntryDialogState<T> extends State<EntryDialog<T>> {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return CommonDialog(
+    return AlertDialog(
       title: _isBatch ? appLocalizations.batchAdd : widget.title,
       hasFields: true,
       trailing: widget.batch == null
@@ -212,7 +215,7 @@ class _BatchToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonMinIconButtonTheme(
+    return MinIconButtonTheme(
       child: IconButton(
         tooltip: tooltip,
         onPressed: onPressed,
@@ -250,6 +253,7 @@ class _BatchInputField<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
     return TextField(
+      contextMenuBuilder: TextSelectionMenu.editableText,
       controller: controller,
       autofocus: true,
       minLines: 4,

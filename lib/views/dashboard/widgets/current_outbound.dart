@@ -15,11 +15,12 @@ import 'package:fl_clash/views/dashboard/layout.dart';
 import 'package:fl_clash/views/dashboard/probe_start_hold.dart';
 import 'package:fl_clash/views/dashboard/style.dart';
 import 'package:fl_clash/widgets/widgets.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_new_shapes/material_new_shapes.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:prism_ui/shapes/shapes.dart';
 
 import 'card.dart';
+import 'package:prism_ui/prism_ui.dart';
 
 const _builtinOutbounds = {'DIRECT', 'REJECT', 'REJECT-DROP', 'PASS'};
 
@@ -312,12 +313,10 @@ class _ExitRow extends StatelessWidget {
             child: FocusRing(
               shape: AppShape.xs,
               standsOff: true,
-              child: InkWell(
+              child: PressRegion(
                 onTap: () => showIpQualitySheet(context, ip: info.ip),
-                customBorder: AppShape.xs,
-                hoverColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+                shape: AppShape.xs,
+                overlay: PressRegion.focusOverlay,
                 child: _IpText(ip: info.ip, style: style),
               ),
             ),
@@ -533,12 +532,10 @@ class _CountryBadgeState extends State<_CountryBadge>
         button: true,
         enabled: enabled,
         label: tooltip,
-        child: InkResponse(
+        child: PressRegion(
           onTap: enabled ? widget.onRefresh : null,
           onHover: (value) => setState(() => _hovered = value),
           onFocusChange: (value) => setState(() => _focused = value),
-          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-          splashFactory: NoSplash.splashFactory,
           child: ElasticPress(
             enabled: enabled,
             child: AnimatedBuilder(
@@ -685,11 +682,7 @@ const _stateDuration = Duration(milliseconds: 150);
 
 final _startMorph = Morph(MaterialShapes.circle, MaterialShapes.cookie9Sided);
 
-Path _morphPath(double progress) => _startMorph.toPath(
-  progress: progress,
-  rotationPivotX: 0.5,
-  rotationPivotY: 0.5,
-);
+Path _morphPath(double progress) => _startMorph.toPath(progress: progress);
 
 double _morphTurn(double progress) => progress * 2 * math.pi / 9;
 
@@ -729,7 +722,7 @@ class _StartToggleState extends ConsumerState<_StartToggle>
   var _focused = false;
 
   /// The M3 state layer, painted inside the shape: the card's decoration
-  /// covers the button, so ink on the card's Material would never show.
+  /// covers the button, so ink on the card would never show.
   double get _overlay => !widget.enabled
       ? 0
       : _focused
@@ -780,13 +773,11 @@ class _StartToggleState extends ConsumerState<_StartToggle>
         button: true,
         enabled: enabled,
         label: tooltip,
-        child: InkResponse(
+        child: PressRegion(
           onTap: enabled ? _toggle : null,
           onHover: (value) => setState(() => _hovered = value),
-          onHighlightChanged: (value) => setState(() => _pressed = value),
+          onPressedChanged: (value) => setState(() => _pressed = value),
           onFocusChange: (value) => setState(() => _focused = value),
-          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-          splashFactory: NoSplash.splashFactory,
           child: ElasticPress(
             enabled: enabled,
             child: TweenAnimationBuilder<double>(

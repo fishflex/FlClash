@@ -9,10 +9,10 @@ import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/state.dart';
-import 'package:fl_clash/ui/color.dart';
 import 'package:fl_clash/views/navigation.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:prism_ui/prism_ui.dart';
 import 'package:riverpod/riverpod.dart';
 
 import '../helpers/test_profiles.dart';
@@ -740,7 +740,7 @@ void main() {
     );
     expect(fallback.brightness, Brightness.light);
     final explicit = container.read(
-      genColorSchemeProvider(Brightness.dark, color: Colors.purple),
+      genColorSchemeProvider(Brightness.dark, color: const Color(0xFF9C27B0)),
     );
     expect(explicit.brightness, Brightness.dark);
 
@@ -753,7 +753,7 @@ void main() {
   test('a color scheme outlives the provider that generated it', () {
     final provider = genColorSchemeProvider(
       Brightness.dark,
-      color: Colors.teal,
+      color: const Color(0xFF009688),
     );
     final first = container.read(provider);
     container.invalidate(provider);

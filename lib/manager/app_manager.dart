@@ -9,7 +9,7 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/ui.dart';
 import 'package:fl_clash/widgets/icon.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AppStateManager extends ConsumerStatefulWidget {
@@ -235,7 +235,7 @@ class AppSidebarContainer extends ConsumerWidget {
         children: [
           AnimatedVisibility.sidebar(
             visible: hasSidebar,
-            child: Material(
+            child: Surface(
               color: backdropOpacity != null
                   ? chrome.withValues(alpha: backdropOpacity)
                   : chrome,
