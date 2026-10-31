@@ -1,6 +1,6 @@
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/ui/color.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:prism_ui/color.dart';
 
 import 'app.dart';
 import 'clash_config.dart';
@@ -213,7 +213,18 @@ abstract class MakeRealProfileState with _$MakeRealProfileState {
     @Default({}) Map<String, dynamic> injectedRuleProviders,
     String? matchTarget,
     @Default(false) bool safeMode,
+    @Default([]) List<MitmModuleSource> mitmModules,
   }) = _MakeRealProfileState;
+}
+
+/// An enabled module as the profile build reads it.
+@freezed
+abstract class MitmModuleSource with _$MitmModuleSource {
+  const factory MitmModuleSource({
+    required String content,
+    @Default({}) Map<String, String> arguments,
+    @Default({}) Map<String, String> resources,
+  }) = _MitmModuleSource;
 }
 
 @freezed
@@ -228,6 +239,7 @@ abstract class MigrationData with _$MigrationData {
     @Default([]) List<ClashProvider> clashProviders,
     @Default([]) List<CustomProxy> customProxies,
     @Default([]) List<ProxyDialer> proxyDialers,
+    @Default([]) List<MitmModule> mitmModules,
   }) = _MigrationData;
 }
 
@@ -248,5 +260,6 @@ abstract class SetupState with _$SetupState {
     @Default([]) List<CustomProxy> appProxies,
     @Default({}) Map<int, String> proxyDialers,
     String? matchTarget,
+    @Default([]) List<MitmModuleSource> mitmModules,
   }) = _SetupState;
 }
