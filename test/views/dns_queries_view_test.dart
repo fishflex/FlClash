@@ -302,6 +302,42 @@ void main() {
     await teardownView(tester);
   });
 
+  testWidgets('a wide page pins the offered values as toggles', (tester) async {
+    seedDnsQueries([
+      _dnsQuery('alpha.test'),
+      _dnsQuery('beta.test', type: 'AAAA'),
+      _dnsQuery('gamma.test', cached: true),
+      _dnsQuery('delta.test', rcode: 'NXDOMAIN', answers: const []),
+    ]);
+
+    await pumpDnsQueries(tester);
+
+    for (final label in ['A', 'AAAA', 'Cache', 'NXDOMAIN']) {
+      expect(find.widgetWithText(Chip, label), findsOneWidget);
+    }
+    await tester.tap(find.widgetWithText(Chip, 'AAAA'));
+    await tester.pumpAndSettle();
+    expect(find.text('beta.test'), findsOneWidget);
+    expect(find.text('alpha.test'), findsNothing);
+
+    await tester.tap(find.widgetWithText(Chip, 'AAAA'));
+    await tester.pumpAndSettle();
+    expect(find.text('alpha.test'), findsOneWidget);
+  });
+
+  testWidgets('a query arriving later offers its value', (tester) async {
+    seedDnsQueries([_dnsQuery('alpha.test')]);
+
+    await pumpDnsQueries(tester);
+    expect(find.widgetWithText(Chip, 'AAAA'), findsNothing);
+
+    seedDnsQueries([_dnsQuery('beta.test', type: 'AAAA')]);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    expect(find.widgetWithText(Chip, 'AAAA'), findsOneWidget);
+  });
+
   testWidgets('tapping a query opens its details', (tester) async {
     seedDnsQueries([
       _dnsQuery(
