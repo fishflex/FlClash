@@ -9,11 +9,10 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show SelectableText;
-import 'package:material_ui/material_ui.dart' as material show Scaffold;
 
 import '../helpers/scrollbar.dart';
 import '../helpers/test_app.dart';
+import '../helpers/host_scaffold.dart';
 
 void main() {
   const logCount = 200;
@@ -126,7 +125,7 @@ void main() {
   testWidgets('a one-line log is only as tall as its content', (tester) async {
     await tester.pumpWidget(
       const TestApp(
-        child: material.Scaffold(
+        child: HostScaffold(
           body: Column(
             children: [
               LogItem(
@@ -146,18 +145,20 @@ void main() {
   });
 
   testWidgets('tapping the level reports it for filtering', (tester) async {
-    String? clicked;
+    RecordFilter? clicked;
     await tester.pumpWidget(
       TestApp(
-        child: material.Scaffold(
-          body: LogItem(
-            log: const Log(
-              logLevel: LogLevel.warning,
-              payload:
-                  '[TCP] dial Proxy 10.0.0.2:1 --> a.example:443 error: EOF',
-              dateTime: '2024-01-01 12:00:00',
+        child: HostScaffold(
+          body: RecordFilterScope(
+            onFilter: (filter) => clicked = filter,
+            child: const LogItem(
+              log: Log(
+                logLevel: LogLevel.warning,
+                payload:
+                    '[TCP] dial Proxy 10.0.0.2:1 --> a.example:443 error: EOF',
+                dateTime: '2024-01-01 12:00:00',
+              ),
             ),
-            onClick: (value) => clicked = value,
           ),
         ),
       ),
@@ -165,7 +166,7 @@ void main() {
 
     await tester.tap(find.text('warning'));
 
-    expect(clicked, 'warning');
+    expect(clicked, const RecordFilter(RecordFacetKind.level, 'warning'));
   });
 
   group('LogListController', () {
